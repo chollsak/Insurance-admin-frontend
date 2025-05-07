@@ -26,6 +26,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { useNavigate } from 'react-router-dom';
 
 interface NewsItem {
   id: number;
@@ -37,6 +38,11 @@ interface NewsItem {
 const News: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const navigate = useNavigate();
+
+  const handleNewClick = () => {
+    navigate('/Create');
+  };
   
   // Initial news items data
   const initialNewsItems: NewsItem[] = [
@@ -180,6 +186,7 @@ const News: React.FC = () => {
           <Button 
             variant="contained" 
             startIcon={<AddIcon />}
+            onClick={handleNewClick}
             sx={{ 
               bgcolor: '#3978E9', 
               height: 36,
