@@ -48,7 +48,9 @@ const Home: React.FC = () => {
           overflow: 'auto',
           backgroundColor: '#f8f9fa'
         }}>
+
           <News />
+
         </Box>
       </Box>
     </Box>

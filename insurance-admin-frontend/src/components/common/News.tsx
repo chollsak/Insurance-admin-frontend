@@ -269,7 +269,7 @@ const News: React.FC = () => {
                 sx={{ 
                   height: '40px',
                   padding: '0px 16px',
-                  width: '5%', 
+                  width: '10%', 
                   bgcolor: '#CEDFFF',
                   borderBottom: 'none',
                   color: '#05058C',
@@ -374,7 +374,7 @@ const News: React.FC = () => {
                   sx={{ 
                     height: '40px',
                     padding: '0px 16px',
-                    borderBottom: '1px solid #f0f0f0'
+                    borderBottom: '1px solid #f0f0f0',
                   }}
                 >
                   <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -382,13 +382,13 @@ const News: React.FC = () => {
                       size="small" 
                       sx={{ 
                         color: '#555', 
-                        padding: '4px',
+                        paddingRight: '20px',
                         '&:hover': { 
                           color: '#1976d2' 
                         }
                       }}
                     >
-                      <EditIcon sx={{ fontSize: 20 }} />
+                      <Box component={'img'} src='src/assets/img/icons/pen.png' sx={{ width:'16px' }} />
                     </IconButton>
                     <IconButton 
                       size="small" 
@@ -400,7 +400,7 @@ const News: React.FC = () => {
                         }
                       }}
                     >
-                      <DeleteIcon sx={{ fontSize: 20 }} />
+                      <Box component={'img'} src='src/assets/img/icons/bin.png' sx={{ width:'16px' }} />
                     </IconButton>
                   </Box>
                 </TableCell>
@@ -425,7 +425,7 @@ const News: React.FC = () => {
                       }}
                       className="drag-handle"
                     >
-                      <DragIndicatorIcon sx={{ fontSize: 20 }} />
+                      <Box component={'img'} src='src/assets/img/icons/drag.png' sx={{ width:'24px' }} />
                     </IconButton>
                   </Box>
                 </TableCell>
