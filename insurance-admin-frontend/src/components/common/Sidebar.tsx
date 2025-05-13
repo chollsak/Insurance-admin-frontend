@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, List, ListItem } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 interface SidebarItemProps {
   iconSrc: string;
@@ -17,20 +18,20 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ iconSrc, text, active = false
         alignItems: 'center',
         backgroundColor: active ? '#063868' : 'transparent',
         borderRadius: '6px',
-        ml:-0,
+        ml: -0,
         mb: 0.5,
         '&:hover': {
           backgroundColor: active ? '#1a3a70' : 'rgba(0, 0, 0, 0.04)',
+          cursor: 'pointer',
         },
       }}
     >
-    
-    <Box width={'9px'} height={'45px'} sx={{
-        borderRadius:'4px',
-        mr:3,
-        ml:-4.65,
+      <Box width={'9px'} height={'45px'} sx={{
+        borderRadius: '4px',
+        mr: 3,
+        ml: -4.65,
         backgroundColor: active ? '#063868' : 'transparent',
-    }}/>
+      }} />
 
       <Box
         sx={{
@@ -67,6 +68,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ iconSrc, text, active = false
 };
 
 export const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
     <Box
       sx={{
@@ -80,10 +87,10 @@ export const Sidebar: React.FC = () => {
       }}
     >
       {/* Logo and Company Name - Now Centered */}
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        mb:0
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        mb: 0
       }}>
         <Box
           sx={{
@@ -95,13 +102,15 @@ export const Sidebar: React.FC = () => {
         >
           <Box
             component="img"
-            src="src/assets/img/navbar/BKI.png"
+            src="/src/assets/img/navbar/BKI.png"
             alt="Bangkok Insurance Logo"
+            onClick={handleLogoClick}
             sx={{
               width: '100%',
               height: 'auto',
-              ml:'-40px',
-              mb:'20px'
+              ml: '-40px',
+              mb: '20px',
+              cursor: 'pointer',
             }}
           />
         </Box>
@@ -109,15 +118,15 @@ export const Sidebar: React.FC = () => {
 
       {/* Menu Items */}
       <List sx={{ p: 0 }}>
-        <SidebarItem iconSrc="src/assets/img/icons/dashboard.png" text="Dashboard" />
-        <SidebarItem iconSrc="src/assets/img/icons/website.png" text="ข่าวสารและกิจกรรม" active={true} />
-        <SidebarItem iconSrc="src/assets/img/icons/website.png" text="ส่วนประกอบเว็บไซต์" />
-        <SidebarItem iconSrc="src/assets/img/icons/claims.png" text="รายการแจ้งเคลม" />
-        <SidebarItem iconSrc="src/assets/img/icons/renewal.png" text="รายการต่ออายุกรมธรรม์" />
-        <SidebarItem iconSrc="src/assets/img/icons/payment.png" text="รายการชำระเงิน" />
-        <SidebarItem iconSrc="src/assets/img/icons/inspection.png" text="รายการตรวจสภาพรถ" />
-        <SidebarItem iconSrc="src/assets/img/icons/tax.png" text="รายการลดหย่อนภาษี" />
-        <SidebarItem iconSrc="src/assets/img/icons/settings.png" text="ตั้งค่า" />
+        <SidebarItem iconSrc="/src/assets/img/icons/dashboard.png" text="Dashboard" />
+        <SidebarItem iconSrc="/src/assets/img/icons/website.png" text="ข่าวสารและกิจกรรม" active={true} />
+        <SidebarItem iconSrc="/src/assets/img/icons/website.png" text="ส่วนประกอบเว็บไซต์" />
+        <SidebarItem iconSrc="/src/assets/img/icons/claims.png" text="รายการแจ้งเคลม" />
+        <SidebarItem iconSrc="/src/assets/img/icons/renewal.png" text="รายการต่ออายุกรมธรรม์" />
+        <SidebarItem iconSrc="/src/assets/img/icons/payment.png" text="รายการชำระเงิน" />
+        <SidebarItem iconSrc="/src/assets/img/icons/inspection.png" text="รายการตรวจสภาพรถ" />
+        <SidebarItem iconSrc="/src/assets/img/icons/tax.png" text="รายการลดหย่อนภาษี" />
+        <SidebarItem iconSrc="/src/assets/img/icons/settings.png" text="ตั้งค่า" />
       </List>
     </Box>
   );

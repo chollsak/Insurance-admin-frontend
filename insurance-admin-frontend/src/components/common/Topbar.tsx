@@ -9,8 +9,6 @@ import {
   MenuItem,
   Paper
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 interface TopbarProps {
   onToggleSidebar: () => void;
@@ -55,7 +53,12 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar }) => {
           onClick={onToggleSidebar}
           sx={{ color: '#063868' }}
         >
-          <MenuIcon />
+          <Box
+            component="img"
+            src="/src/assets/img/icons/menu.png"
+            alt="Menu"
+            sx={{ width: '24px', height: '24px' }}
+          />
         </IconButton>
         
         {/* Right side - User profile */}
@@ -81,7 +84,12 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar }) => {
                 Admin
               </Typography>
             </Box>
-            <KeyboardArrowDownIcon sx={{ color: '#063868', ml: 1 }} />
+            <Box
+              component="img"
+              src="/src/assets/img/icons/v.png"
+              alt="Arrow Down"
+              sx={{ width: '24px', height: '24px', ml: 1 }}
+            />
           </Box>
           
           <Menu

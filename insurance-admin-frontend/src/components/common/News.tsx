@@ -18,14 +18,6 @@ import {
   type SelectChangeEvent,
   Divider
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import AddIcon from '@mui/icons-material/Add';
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { useNavigate } from 'react-router-dom';
 
 interface NewsItem {
@@ -41,7 +33,7 @@ const News: React.FC = () => {
   const navigate = useNavigate();
 
   const handleNewClick = () => {
-    navigate('/Create');
+    navigate('/Create/Banner');
   };
   
   // Initial news items data
@@ -167,6 +159,14 @@ const News: React.FC = () => {
                 value={selectedCategory}
                 displayEmpty
                 onChange={handleCategoryChange}
+                IconComponent={() => (
+                  <Box
+                    component="img"
+                    src="/src/assets/img/icons/v.png"
+                    alt="Arrow Down"
+                    sx={{ width: '24px', height: '24px', mr: 1 }}
+                  />
+                )}
                 sx={{ 
                   height: 40,
                   '& .MuiOutlinedInput-notchedOutline': {
@@ -185,7 +185,14 @@ const News: React.FC = () => {
 
           <Button 
             variant="contained" 
-            startIcon={<AddIcon />}
+            startIcon={
+              <Box
+                component="img"
+                src="/src/assets/img/icons/add.png"
+                alt="Add"
+                sx={{ width: '16px', height: '16px' }}
+              />
+            }
             onClick={handleNewClick}
             sx={{ 
               bgcolor: '#3978E9', 
@@ -479,6 +486,14 @@ const News: React.FC = () => {
             value={rowsPerPage.toString()}
             onChange={handleRowsPerPageChange}
             size="small"
+            IconComponent={() => (
+              <Box
+                component="img"
+                src="/src/assets/img/icons/v.png"
+                alt="Arrow Down"
+                sx={{ width: '20px', height: '20px', mr: 1 }}
+              />
+            )}
             sx={{ 
               mr: 2, 
               minWidth: 60,
@@ -497,16 +512,36 @@ const News: React.FC = () => {
 
         <Box >
           <IconButton size="small" disabled sx={{ color: '#ccc' }}>
-            <KeyboardDoubleArrowLeftIcon fontSize="small" />
+            <Box
+              component="img"
+              src="/src/assets/img/icons/double-arrow-left.png"
+              alt="First Page"
+              sx={{ width: '20px', height: '20px', opacity: 0.5 }}
+            />
           </IconButton>
           <IconButton size="small" disabled sx={{ color: '#ccc' }}>
-            <NavigateBeforeIcon fontSize="small" />
+            <Box
+              component="img"
+              src="/src/assets/img/icons/arrow-left.png"
+              alt="Previous Page"
+              sx={{ width: '20px', height: '20px', opacity: 0.5 }}
+            />
           </IconButton>
           <IconButton size="small" disabled>
-            <NavigateNextIcon fontSize="small" sx={{ color: '#24292E' }}/>
+            <Box
+              component="img"
+              src="/src/assets/img/icons/arrow-right.png"
+              alt="Next Page"
+              sx={{ width: '20px', height: '20px' }}
+            />
           </IconButton>
           <IconButton size="small" disabled >
-            <KeyboardDoubleArrowRightIcon fontSize="small" sx={{ color: '#24292E' }}/>
+            <Box
+              component="img"
+              src="/src/assets/img/icons/double-arrow-right.png"
+              alt="Last Page"
+              sx={{ width: '20px', height: '20px' }}
+            />
           </IconButton>
         </Box>
       </Box>

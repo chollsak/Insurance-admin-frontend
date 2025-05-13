@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Box,
   FormControl,
+  InputLabel,
   Select,
   MenuItem,
   TextField,
   Typography,
+  OutlinedInput,
   IconButton,
-  InputAdornment} from '@mui/material';
+  InputAdornment,
+  FormHelperText
+} from '@mui/material';
 
 interface FormData {
   category: string;
@@ -17,12 +21,12 @@ interface FormData {
   status: string;
 }
 
-const FormComponent: React.FC = () => {
+const FormComponentPromotion: React.FC = () => {
   // Add useNavigate hook for routing
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState<FormData>({
-    category: 'Banner',
+    category: 'Promotion',
     title: '',
     effectiveDate: '',
     status: 'Active'
@@ -55,10 +59,10 @@ const FormComponent: React.FC = () => {
     });
     
     // Navigate based on the selected category
-    if (newCategory === 'Banner') {
-      navigate('/Create/Banner', { replace: true });
-    } else if (newCategory === 'Promotion') {
+    if (newCategory === 'Promotion') {
       navigate('/Create/Promotion', { replace: true });
+    } else if (newCategory === 'Banner') {
+      navigate('/Create/Banner', { replace: true });
     }
   };
 
@@ -75,7 +79,7 @@ const FormComponent: React.FC = () => {
           }}>
             Category <span style={{ color: '#FF0000' }}>*</span>
           </Typography>
-          <FormControl sx={{width:'340px'}}>
+          <FormControl fullWidth>
             <Select
               value={formData.category}
               onChange={handleCategoryChange}
@@ -154,7 +158,7 @@ const FormComponent: React.FC = () => {
                       component="img"
                       src="/src/assets/img/icons/calendar.png"
                       alt="Calendar"
-                      sx={{ width: '16px', height: '16px',mr:0 }}
+                      sx={{ width: '16px', height: '16px' }}
                     />
                   </IconButton>
                 </InputAdornment>
@@ -217,4 +221,4 @@ const FormComponent: React.FC = () => {
   );
 };
 
-export default FormComponent;
+export default FormComponentPromotion;
