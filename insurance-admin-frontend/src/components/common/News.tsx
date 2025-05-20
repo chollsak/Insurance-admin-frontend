@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -16,53 +16,168 @@ import {
   Breadcrumbs,
   Link,
   type SelectChangeEvent,
-  Divider
+  Divider,
+  CircularProgress,
+  DialogTitle,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { contentService } from '../../api/services/contentService';
+import type { Content, ContentCategory, ContentListData } from '../../api/types/content';
+import { bannerService } from '../../api/services/bannerService';
+import { insuranceService } from '../../api/services/insuranceService';
+import { promotionService } from '../../api/services/promotionService';
+import { suitInsuranceService } from '../../api/services/suitInsuranceService';
+
+type UICategory = 'เเบนเนอร์' | 'โปรโมชั่น' | 'ประกันภัย' | 'ประกันที่เหมาะสม';
+
+const mapUICategoryToAPI = (uiCategory: UICategory): ContentCategory => {
+  switch (uiCategory) {
+    case 'เเบนเนอร์':
+      return 'BANNER';
+    case 'โปรโมชั่น':
+      return 'PROMOTION';
+    case 'ประกันภัย':
+      return 'INSURANCE';
+    case 'ประกันที่เหมาะสม':
+      return 'SUIT_INSURANCE';
+    default:
+      return 'BANNER';
+  }
+};
+
+const mapAPICategoryToUI = (apiCategory: ContentCategory): UICategory => {
+  switch (apiCategory) {
+    case 'BANNER':
+      return 'เเบนเนอร์';
+    case 'PROMOTION':
+      return 'โปรโมชั่น';
+    case 'INSURANCE':
+      return 'ประกันภัย';
+    case 'SUIT_INSURANCE':
+      return 'ประกันที่เหมาะสม';
+    default:
+      return 'เเบนเนอร์'; 
+  }
+};
 
 interface NewsItem {
-  id: number;
+  id: string;
   title: string;
-  category: string;
-  status: 'Active' | 'Inactive';
+  category: UICategory;
+  status: 'ACTIVE' | 'INACTIVE';
+  categoryContentId: string;
 }
 
 const News: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const navigate = useNavigate();
+  
+  const [contentData, setContentData] = useState<ContentListData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [draggedItem, setDraggedItem] = useState<NewsItem | null>(null);
+  const [draggedOverIndex, setDraggedOverIndex] = useState<number | null>(null);
+
+
+useEffect(() => {
+  const fetchNewsContent = async () => {
+    try {
+      setLoading(true);
+      
+      let data: ContentListData;
+      
+      if (selectedCategory === 'เเบนเนอร์') {
+        data = await contentService.getContentsByCategory(
+          'BANNER', 
+          currentPage, 
+          rowsPerPage
+        );
+      } else if (selectedCategory === 'โปรโมชั่น') {
+        data = await contentService.getContentsByCategory(
+          'PROMOTION', 
+          currentPage, 
+          rowsPerPage
+        );
+      } else if (selectedCategory === 'ประกันภัย') {
+        data = await contentService.getContentsByCategory(
+          'INSURANCE', 
+          currentPage, 
+          rowsPerPage
+        );
+      } else if (selectedCategory === 'ประกันที่เหมาะสม') {
+        data = await contentService.getContentsByCategory(
+          'SUIT_INSURANCE', 
+          currentPage, 
+          rowsPerPage
+        );
+      } else {
+        
+        data = await contentService.getAllContents(currentPage, rowsPerPage);
+      }
+      
+      console.log('Fetched content data:', data);
+      setContentData(data);
+      
+      const mappedItems: NewsItem[] = data.content
+        .map((item) => {
+          const uiCategory = mapAPICategoryToUI(item.category as ContentCategory);
+          
+          return {
+            id: item.id,
+            title: item.title,
+            category: uiCategory,
+            status: item.status as 'ACTIVE' | 'INACTIVE',
+            categoryContentId: item.categoryContentId
+          };
+        });
+      
+      setNewsItems(mappedItems);
+      setError(null);
+    } catch (err: any) {
+      console.error('Failed to fetch news content:', err);
+      setError('Failed to load news content');
+      
+      setNewsItems([
+        { id: '1', title: 'กรุงเทพประกันภัยได้รับการจัดอันดับความน่าเชื่อถือ A- (Stable)', category: 'เเบนเนอร์', status: 'ACTIVE', categoryContentId: '' },
+        { id: '2', title: 'กรุงเทพประกันภัยยึดมั่นองค์กรโปร่งใส รับประกาศนียบัตรรับรองจาก CAC', category: 'โปรโมชั่น', status: 'INACTIVE', categoryContentId: '' },
+        { id: '3', title: 'กรุงเทพประกันภัยยึดมั่นองค์กรโปร่งใส รับประกาศนียบัตรรับรองจาก CAC', category: 'ประกันภัย', status: 'INACTIVE', categoryContentId: '' },
+        { id: '4', title: 'บีเคไอ โฮลดิ้งส์ ได้รับการประเมินการกำกับดูแลกิจการในระดับ 5 ดาว', category: 'ประกันที่เหมาะสม', status: 'INACTIVE', categoryContentId: '' }
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchNewsContent();
+}, [selectedCategory, currentPage, rowsPerPage]);
 
   const handleNewClick = () => {
     navigate('/Create/Banner');
   };
-  
-  // Initial news items data
-  const initialNewsItems: NewsItem[] = [
-    { id: 1, title: 'กรุงเทพประกันภัยได้รับการจัดอันดับความน่าเชื่อถือ A- (Stable)', category: 'ข่าวสาร', status: 'Active' },
-    { id: 2, title: 'กรุงเทพประกันภัยยึดมั่นองค์กรโปร่งใส รับประกาศนียบัตรรับรองจาก CAC', category: 'กิจกรรม', status: 'Inactive' },
-    { id: 3, title: 'กรุงเทพประกันภัยยึดมั่นองค์กรโปร่งใส รับประกาศนียบัตรรับรองจาก CAC', category: 'กิจกรรม', status: 'Inactive' },
-    { id: 4, title: 'บีเคไอ โฮลดิ้งส์ ได้รับการประเมินการกำกับดูแลกิจการในระดับ 5 ดาว', category: 'กิจกรรม', status: 'Inactive' }
-  ];
-  
-  const [newsItems, setNewsItems] = useState<NewsItem[]>(initialNewsItems);
-  const [draggedItem, setDraggedItem] = useState<NewsItem | null>(null);
-  const [draggedOverIndex, setDraggedOverIndex] = useState<number | null>(null);
 
   const handleCategoryChange = (event: SelectChangeEvent): void => {
     setSelectedCategory(event.target.value);
+    setCurrentPage(0);
   };
 
   const handleRowsPerPageChange = (event: SelectChangeEvent): void => {
-    setRowsPerPage(parseInt(event.target.value as string, 10));
+    const newRowsPerPage = parseInt(event.target.value as string, 10);
+    setRowsPerPage(newRowsPerPage);
+    setCurrentPage(0);
   };
 
-  // Calculate how many empty rows to add
   const emptyRowsCount = Math.max(0, rowsPerPage - newsItems.length);
   
-  // Drag and drop functionality
   const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, item: NewsItem): void => {
     setDraggedItem(item);
-    // Make the drag image transparent
+
     const dragImg = document.createElement('img');
     dragImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     e.dataTransfer.setDragImage(dragImg, 0, 0);
@@ -93,6 +208,159 @@ const News: React.FC = () => {
   const handleDragEnd = (): void => {
     setDraggedItem(null);
     setDraggedOverIndex(null);
+  };
+
+  const handleFirstPage = () => {
+    setCurrentPage(0);
+  };
+  
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => Math.max(0, prev - 1));
+  };
+  
+  const handleNextPage = () => {
+    if (contentData) {
+      setCurrentPage(prev => Math.min(contentData.paging.totalPage - 1, prev + 1));
+    }
+  };
+  
+  const handleLastPage = () => {
+    if (contentData) {
+      setCurrentPage(contentData.paging.totalPage - 1);
+    }
+  };
+
+  const getPaginationText = (): string => {
+    if (!contentData) return '0-0 of 0';
+    
+    const { pageNo, pageSize, totalRow } = contentData.paging;
+    const start = pageNo * pageSize + 1;
+    const end = Math.min((pageNo + 1) * pageSize, totalRow);
+    
+    return `${start}-${end} of ${totalRow}`;
+  };
+
+  // Handle edit and delete
+  const handleEdit = (item: NewsItem) => {
+    // Map back to the appropriate API category
+    const apiCategory = mapUICategoryToAPI(item.category);
+    navigate(`/Edit/${apiCategory}/${item.id}`);
+  };
+
+  const ConfirmDeleteDialog = ({ 
+    open, 
+    onClose, 
+    onConfirm, 
+    title 
+  }: {
+    open: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    title: string;
+  }) => {
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>ยืนยันการลบ</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            คุณแน่ใจหรือไม่ว่าต้องการลบ "{title}"?
+            การดำเนินการนี้ไม่สามารถยกเลิกได้
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} color="primary">
+            ยกเลิก
+          </Button>
+          <Button onClick={onConfirm} color="error" variant="contained">
+            ลบ
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+  
+  // Usage with dialog in your component:
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    item: NewsItem | null;
+  }>({ open: false, item: null });
+  
+  const handleDeleteClick = (item: NewsItem) => {
+    setDeleteDialog({ open: true, item });
+  };
+  
+  const handleConfirmDelete = async () => {
+    if (deleteDialog.item) {
+      await handleDelete(deleteDialog.item);
+      setDeleteDialog({ open: false, item: null });
+    }
+  };
+  
+  const handleCloseDialog = () => {
+    setDeleteDialog({ open: false, item: null });
+  };
+
+  const handleDelete = async (item: NewsItem) => {
+    if (window.confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ "${item.title}"?`)) {
+      try {
+        setLoading(true);
+        
+        const apiCategory = mapUICategoryToAPI(item.category);
+        
+        switch (apiCategory) {
+          case 'BANNER':
+            await bannerService.deleteBanner(item.categoryContentId);
+            break;
+          case 'PROMOTION':
+            await promotionService.deletePromotion(item.categoryContentId);
+            break;
+          case 'INSURANCE':
+            await insuranceService.deleteInsurance(item.categoryContentId);
+            break;
+          case 'SUIT_INSURANCE':
+            await suitInsuranceService.deleteSuitInsurance(item.categoryContentId);
+            break;
+          default:
+            throw new Error(`Unsupported category: ${apiCategory}`);
+        }
+        
+        // Remove from local state after successful deletion
+        setNewsItems(prev => prev.filter(i => i.id !== item.id));
+        
+        // Update the content data to reflect the new total count
+        if (contentData) {
+          setContentData(prev => prev ? {
+            ...prev,
+            paging: {
+              ...prev.paging,
+              totalRow: prev.paging.totalRow - 1,
+              totalPage: Math.ceil((prev.paging.totalRow - 1) / prev.paging.pageSize)
+            }
+          } : null);
+        }
+        
+        // Show success message
+        alert('ลบข้อมูลสำเร็จ');
+        
+      } catch (err: any) {
+        console.error('Failed to delete content:', err);
+        
+        // Show specific error message based on error type
+        let errorMessage = 'เกิดข้อผิดพลาดในการลบข้อมูล กรุณาลองใหม่อีกครั้ง';
+        
+        if (err.response?.status === 404) {
+          errorMessage = 'ไม่พบข้อมูลที่ต้องการลบ';
+        } else if (err.response?.status === 403) {
+          errorMessage = 'คุณไม่มีสิทธิ์ในการลบข้อมูลนี้';
+        } else if (err.response?.status === 409) {
+          errorMessage = 'ไม่สามารถลบข้อมูลนี้ได้เนื่องจากมีการใช้งานอยู่';
+        }
+        
+        alert(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -177,8 +445,10 @@ const News: React.FC = () => {
                 <MenuItem value="">
                   <em>ทั้งหมด</em>
                 </MenuItem>
-                <MenuItem value="ข่าวสาร">ข่าวสาร</MenuItem>
-                <MenuItem value="กิจกรรม">กิจกรรม</MenuItem>
+                <MenuItem value="เเบนเนอร์">เเบนเนอร์</MenuItem>
+                <MenuItem value="โปรโมชั่น">โปรโมชั่น</MenuItem>
+                <MenuItem value="ประกันภัย">ประกันภัย</MenuItem>
+                <MenuItem value="ประกันที่เหมาะสม">ประกันที่เหมาะสม</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -209,266 +479,275 @@ const News: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Table with draggable rows */}
-      <TableContainer 
-        sx={{ 
-          mb: 3,
-          border: 'none',
-          borderRadius: 0,
-          overflow: 'hidden'
-        }}
-      >
-        <Table sx={{ minWidth: 650 }} aria-label="news table">
-          <TableHead>
-            <TableRow sx={{ height: '40px' }}>
-              <TableCell 
-                align="center" 
-                sx={{ 
-                  height: '40px',
-                  padding: '0px 16px',
-                  width: '5%',
-                  bgcolor: '#CEDFFF',
-                  borderBottom: 'none',
-                  color: '#05058C',
-                  fontWeight: 'bold',
-                  fontSize: '16px'
-                }}
-              >
-                No.
-              </TableCell>
-              <TableCell 
-                sx={{ 
-                  height: '40px',
-                  padding: '0px 16px',
-                  width: '40%', 
-                  bgcolor: '#CEDFFF',
-                  borderBottom: 'none',
-                  color: '#05058C',
-                  fontWeight: 'bold',
-                  fontSize: '16px'
-                }}
-              >
-                Title
-              </TableCell>
-              <TableCell 
-                sx={{ 
-                  height: '40px',
-                  padding: '0px 16px',
-                  width: '10%', 
-                  bgcolor: '#CEDFFF',
-                  borderBottom: 'none',
-                  color: '#05058C',
-                  fontWeight: 'bold',
-                  fontSize: '16px'
-                }}
-              >
-                Category
-              </TableCell>
-              <TableCell 
-                sx={{ 
-                  height: '40px',
-                  padding: '0px 16px',
-                  width: '10%', 
-                  bgcolor: '#CEDFFF',
-                  borderBottom: 'none',
-                  color: '#05058C',
-                  fontWeight: 'bold',
-                  fontSize: '16px'
-                }}
-              >
-                Status
-              </TableCell>
-              <TableCell 
-                align="center" 
-                sx={{ 
-                  height: '40px',
-                  padding: '0px 16px',
-                  width: '10%', 
-                  bgcolor: '#CEDFFF',
-                  borderBottom: 'none',
-                  color: '#05058C',
-                  fontWeight: 'bold',
-                  fontSize: '16px'
-                }}
-              >
-              </TableCell>
-              <TableCell 
-                align="center" 
-                sx={{ 
-                  height: '40px',
-                  padding: '0px 16px',
-                  width: '5%', 
-                  bgcolor: '#CEDFFF',
-                  borderBottom: 'none',
-                  color: '#05058C',
-                  fontWeight: 'bold',
-                  fontSize: '16px'
-                }}
-              >
-                Move
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          
-          <TableBody>
-            {newsItems.map((item, index) => (
-              <TableRow
-                key={item.id.toString()}
-                draggable
-                onDragStart={(e) => handleDragStart(e, item)}
-                onDragOver={(e) => handleDragOver(e, index)}
-                onDrop={(e) => handleDrop(e, index)}
-                onDragEnd={handleDragEnd}
-                sx={{ 
-                  height: '40px',
-                  '&:nth-of-type(odd)': { bgcolor: '#fafafa' },
-                  '&:nth-of-type(even)': { bgcolor: 'white' },
-                  bgcolor: draggedOverIndex === index ? 'rgba(25, 118, 210, 0.08)' : undefined,
-                  opacity: draggedItem?.id === item.id ? 0.5 : 1,
-                  transition: 'background-color 0.2s, opacity 0.2s',
-                  cursor: 'default'
-                }}
-              >
+      {/* Loading indicator */}
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+          <CircularProgress sx={{ color: '#3978E9' }} />
+        </Box>
+      ) : (
+        /* Table with draggable rows */
+        <TableContainer 
+          sx={{ 
+            mb: 3,
+            border: 'none',
+            borderRadius: 0,
+            overflow: 'hidden'
+          }}
+        >
+          <Table sx={{ minWidth: 650 }} aria-label="news table">
+            <TableHead>
+              <TableRow sx={{ height: '40px' }}>
                 <TableCell 
                   align="center" 
                   sx={{ 
                     height: '40px',
                     padding: '0px 16px',
-                    color: '#525252',
-                    fontSize:'22px',
-                    fontWeight: '400',
-                    borderBottom: '1px solid #f0f0f0'
+                    width: '5%',
+                    bgcolor: '#CEDFFF',
+                    borderBottom: 'none',
+                    color: '#05058C',
+                    fontWeight: 'bold',
+                    fontSize: '16px'
                   }}
                 >
-                  {item.id}
-                </TableCell>
-                <TableCell
-                  sx={{ 
-                    height: '40px',
-                    padding: '0px 16px',
-                    color: '#525252',
-                    fontSize:'22px',
-                    fontWeight: '400',
-                    borderBottom: '1px solid #f0f0f0'
-                  }}
-                >
-                  {item.title}
-                </TableCell>
-                <TableCell
-                  sx={{ 
-                    height: '40px',
-                    padding: '0px 16px',
-                    fontWeight: '400',
-                    color: '#525252',
-                    fontSize:'22px',
-                    borderBottom: '1px solid #f0f0f0'
-                  }}
-                >
-                  {item.category}
-                </TableCell>
-                <TableCell
-                  sx={{ 
-                    height: '40px',
-                    padding: '0px 16px',
-                    borderBottom: '1px solid #f0f0f0'
-                  }}
-                >
-                  <Typography 
-                    sx={{ 
-                      color: item.status === 'Active' ? '#0DAB26' : '#CA3B3B',
-                      fontWeight: '400',
-                      fontSize:'22px'
-                    }}
-                  >
-                    {item.status}
-                  </Typography>
+                  No.
                 </TableCell>
                 <TableCell 
-                  align="center"
                   sx={{ 
                     height: '40px',
                     padding: '0px 16px',
-                    borderBottom: '1px solid #f0f0f0',
+                    width: '40%', 
+                    bgcolor: '#CEDFFF',
+                    borderBottom: 'none',
+                    color: '#05058C',
+                    fontWeight: 'bold',
+                    fontSize: '16px'
                   }}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <IconButton 
-                      size="small" 
-                      sx={{ 
-                        color: '#555', 
-                        paddingRight: '20px',
-                        '&:hover': { 
-                          color: '#1976d2' 
-                        }
-                      }}
-                    >
-                      <Box component={'img'} src='src/assets/img/icons/pen.png' sx={{ width:'16px' }} />
-                    </IconButton>
-                    <IconButton 
-                      size="small" 
-                      sx={{ 
-                        color: '#555', 
-                        padding: '4px',
-                        '&:hover': { 
-                          color: '#d32f2f' 
-                        }
-                      }}
-                    >
-                      <Box component={'img'} src='src/assets/img/icons/bin.png' sx={{ width:'16px' }} />
-                    </IconButton>
-                  </Box>
+                  Title
                 </TableCell>
                 <TableCell 
-                  align="center"
                   sx={{ 
                     height: '40px',
                     padding: '0px 16px',
-                    borderBottom: '1px solid #f0f0f0'
+                    width: '10%', 
+                    bgcolor: '#CEDFFF',
+                    borderBottom: 'none',
+                    color: '#05058C',
+                    fontWeight: 'bold',
+                    fontSize: '16px'
                   }}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <IconButton 
-                      size="small" 
-                      sx={{ 
-                        color: '#555', 
-                        padding: '4px', 
-                        cursor: 'grab',
-                        '&:active': {
-                          cursor: 'grabbing'
-                        }
-                      }}
-                      className="drag-handle"
-                    >
-                      <Box component={'img'} src='src/assets/img/icons/drag.png' sx={{ width:'24px' }} />
-                    </IconButton>
-                  </Box>
+                  Category
+                </TableCell>
+                <TableCell 
+                  sx={{ 
+                    height: '40px',
+                    padding: '0px 16px',
+                    width: '10%', 
+                    bgcolor: '#CEDFFF',
+                    borderBottom: 'none',
+                    color: '#05058C',
+                    fontWeight: 'bold',
+                    fontSize: '16px'
+                  }}
+                >
+                  Status
+                </TableCell>
+                <TableCell 
+                  align="center" 
+                  sx={{ 
+                    height: '40px',
+                    padding: '0px 16px',
+                    width: '10%', 
+                    bgcolor: '#CEDFFF',
+                    borderBottom: 'none',
+                    color: '#05058C',
+                    fontWeight: 'bold',
+                    fontSize: '16px'
+                  }}
+                >
+                </TableCell>
+                <TableCell 
+                  align="center" 
+                  sx={{ 
+                    height: '40px',
+                    padding: '0px 16px',
+                    width: '5%', 
+                    bgcolor: '#CEDFFF',
+                    borderBottom: 'none',
+                    color: '#05058C',
+                    fontWeight: 'bold',
+                    fontSize: '16px'
+                  }}
+                >
+                  Move
                 </TableCell>
               </TableRow>
-            ))}
+            </TableHead>
             
-            {/* Empty rows to fill up to 10 */}
-            {emptyRowsCount > 0 && 
-              Array.from({ length: emptyRowsCount }).map((_, index) => (
-                <TableRow 
-                  key={`empty-${index}`}
+            <TableBody>
+              {newsItems.map((item, index) => (
+                <TableRow
+                  key={item.id.toString()}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
                   sx={{ 
                     height: '40px',
                     '&:nth-of-type(odd)': { bgcolor: '#fafafa' },
-                    '&:nth-of-type(even)': { bgcolor: 'white' }
+                    '&:nth-of-type(even)': { bgcolor: 'white' },
+                    bgcolor: draggedOverIndex === index ? 'rgba(25, 118, 210, 0.08)' : undefined,
+                    opacity: draggedItem?.id === item.id ? 0.5 : 1,
+                    transition: 'background-color 0.2s, opacity 0.2s',
+                    cursor: 'default'
                   }}
                 >
-                <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
-                <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
-                <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
-                <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
-                <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
-                <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
+                  <TableCell 
+                    align="center" 
+                    sx={{ 
+                      height: '40px',
+                      padding: '0px 16px',
+                      color: '#525252',
+                      fontSize:'22px',
+                      fontWeight: '400',
+                      borderBottom: '1px solid #f0f0f0'
+                    }}
+                  >
+                    {contentData ? contentData.paging.pageNo * contentData.paging.pageSize + index + 1 : index + 1}
+                  </TableCell>
+                  <TableCell
+                    sx={{ 
+                      height: '40px',
+                      padding: '0px 16px',
+                      color: '#525252',
+                      fontSize:'22px',
+                      fontWeight: '400',
+                      borderBottom: '1px solid #f0f0f0'
+                    }}
+                  >
+                    {item.title}
+                  </TableCell>
+                  <TableCell
+                    sx={{ 
+                      height: '40px',
+                      padding: '0px 16px',
+                      fontWeight: '400',
+                      color: '#525252',
+                      fontSize:'20px',
+                      borderBottom: '1px solid #f0f0f0'
+                    }}
+                  >
+                    {item.category}
+                  </TableCell>
+                  <TableCell
+                    sx={{ 
+                      height: '40px',
+                      padding: '0px 16px',
+                      borderBottom: '1px solid #f0f0f0'
+                    }}
+                  >
+                    <Typography 
+                      sx={{ 
+                        color: item.status === 'ACTIVE' ? '#0DAB26' : '#CA3B3B',
+                        fontWeight: '400',
+                        fontSize:'22px'
+                      }}
+                    >
+                      {item.status}
+                    </Typography>
+                  </TableCell>
+                  <TableCell 
+                    align="center"
+                    sx={{ 
+                      height: '40px',
+                      padding: '0px 16px',
+                      borderBottom: '1px solid #f0f0f0',
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                      <IconButton 
+                        size="small" 
+                        sx={{ 
+                          color: '#555', 
+                          paddingRight: '20px',
+                          '&:hover': { 
+                            color: '#1976d2' 
+                          }
+                        }}
+                        onClick={() => handleEdit(item)}
+                      >
+                        <Box component={'img'} src='src/assets/img/icons/pen.png' sx={{ width:'16px' }} />
+                      </IconButton>
+                      <IconButton 
+                        size="small" 
+                        sx={{ 
+                          color: '#555', 
+                          padding: '4px',
+                          '&:hover': { 
+                            color: '#d32f2f' 
+                          }
+                        }}
+                        onClick={() => handleDelete(item)}
+                      >
+                        <Box component={'img'} src='src/assets/img/icons/bin.png' sx={{ width:'16px' }} />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
+                  <TableCell 
+                    align="center"
+                    sx={{ 
+                      height: '40px',
+                      padding: '0px 16px',
+                      borderBottom: '1px solid #f0f0f0'
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                      <IconButton 
+                        size="small" 
+                        sx={{ 
+                          color: '#555', 
+                          padding: '4px', 
+                          cursor: 'grab',
+                          '&:active': {
+                            cursor: 'grabbing'
+                          }
+                        }}
+                        className="drag-handle"
+                      >
+                        <Box component={'img'} src='src/assets/img/icons/drag.png' sx={{ width:'24px' }} />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
                 </TableRow>
-              ))
-            }
-          </TableBody>
-        </Table>
-      </TableContainer>
+              ))}
+              
+              {/* Empty rows to fill up to rowsPerPage */}
+              {emptyRowsCount > 0 && 
+                Array.from({ length: emptyRowsCount }).map((_, index) => (
+                  <TableRow 
+                    key={`empty-${index}`}
+                    sx={{ 
+                      height: '40px',
+                      '&:nth-of-type(odd)': { bgcolor: '#fafafa' },
+                      '&:nth-of-type(even)': { bgcolor: 'white' }
+                    }}
+                  >
+                  <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
+                  <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
+                  <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
+                  <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
+                  <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
+                  <TableCell sx={{ height: '40px', borderBottom: '1px solid #f0f0f0' }} />
+                  </TableRow>
+                ))
+              }
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
 
       {/* Pagination */}
       <Box sx={{ 
@@ -500,47 +779,87 @@ const News: React.FC = () => {
               height: 32
             }}
           >
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={25}>25</MenuItem>
-            <MenuItem value={50}>50</MenuItem>
+            {contentData?.paging.rowsPerPageOption.map(option => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            )) || [
+              <MenuItem key={10} value={10}>10</MenuItem>,
+              <MenuItem key={25} value={25}>25</MenuItem>,
+              <MenuItem key={50} value={50}>50</MenuItem>
+            ]}
           </Select>
         </Box>
 
         <Typography variant="body2" sx={{mb:0.5}}>
-          1-3 of 3
+          {getPaginationText()}
         </Typography>
 
-        <Box >
-          <IconButton size="small" disabled sx={{ color: '#ccc' }}>
+        <Box>
+          <IconButton 
+            size="small" 
+            disabled={!contentData || currentPage === 0}
+            onClick={handleFirstPage}
+            sx={{ color: '#ccc' }}
+          >
             <Box
               component="img"
               src="/src/assets/img/icons/double-arrow-left.png"
               alt="First Page"
-              sx={{ width: '20px', height: '20px', opacity: 0.5 }}
+              sx={{ 
+                width: '20px', 
+                height: '20px', 
+                opacity: !contentData || currentPage === 0 ? 0.5 : 1 
+              }}
             />
           </IconButton>
-          <IconButton size="small" disabled sx={{ color: '#ccc' }}>
+          <IconButton 
+            size="small" 
+            disabled={!contentData || currentPage === 0}
+            onClick={handlePreviousPage}
+            sx={{ color: '#ccc' }}
+          >
             <Box
               component="img"
               src="/src/assets/img/icons/arrow-left.png"
               alt="Previous Page"
-              sx={{ width: '20px', height: '20px', opacity: 0.5 }}
+              sx={{ 
+                width: '20px', 
+                height: '20px', 
+                opacity: !contentData || currentPage === 0 ? 0.5 : 1 
+              }}
             />
           </IconButton>
-          <IconButton size="small" disabled>
+          <IconButton 
+            size="small" 
+            disabled={!contentData || currentPage >= contentData.paging.totalPage - 1}
+            onClick={handleNextPage}
+          >
             <Box
               component="img"
               src="/src/assets/img/icons/arrow-right.png"
               alt="Next Page"
-              sx={{ width: '20px', height: '20px' }}
+              sx={{ 
+                width: '20px', 
+                height: '20px',
+                opacity: !contentData || currentPage >= contentData.paging.totalPage - 1 ? 0.5 : 1
+              }}
             />
           </IconButton>
-          <IconButton size="small" disabled >
+          <IconButton 
+            size="small" 
+            disabled={!contentData || currentPage >= contentData.paging.totalPage - 1}
+            onClick={handleLastPage}
+          >
             <Box
               component="img"
               src="/src/assets/img/icons/double-arrow-right.png"
               alt="Last Page"
-              sx={{ width: '20px', height: '20px' }}
+              sx={{ 
+                width: '20px', 
+                height: '20px',
+                opacity: !contentData || currentPage >= contentData.paging.totalPage - 1 ? 0.5 : 1
+              }}
             />
           </IconButton>
         </Box>
