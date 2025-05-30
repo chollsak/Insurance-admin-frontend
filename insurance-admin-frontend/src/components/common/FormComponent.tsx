@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
+import {
   Box,
   FormControl,
   Select,
@@ -8,7 +8,8 @@ import {
   TextField,
   Typography,
   IconButton,
-  InputAdornment} from '@mui/material';
+  InputAdornment
+} from '@mui/material';
 
 interface FormData {
   category: string;
@@ -20,7 +21,7 @@ interface FormData {
 const FormComponent: React.FC = () => {
   // Add useNavigate hook for routing
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState<FormData>({
     category: 'Banner',
     title: '',
@@ -45,7 +46,7 @@ const FormComponent: React.FC = () => {
       [field]: event.target.value as string
     });
   };
-  
+
   // Handle category change specifically
   const handleCategoryChange = (event: any) => {
     const newCategory = event.target.value as string;
@@ -53,12 +54,12 @@ const FormComponent: React.FC = () => {
       ...formData,
       category: newCategory
     });
-    
+
     // Navigate based on the selected category
     if (newCategory === 'Banner') {
-      navigate('/Create/Banner', { replace: true });
+      navigate('/banner/create');
     } else if (newCategory === 'Promotion') {
-      navigate('/Create/Promotion', { replace: true });
+      navigate('/promotion/create');
     }
   };
 
@@ -66,16 +67,16 @@ const FormComponent: React.FC = () => {
     <Box sx={{ display: 'flex' }}>
       <Box sx={{ width: '100%', maxWidth: '540px' }}>
         <Box sx={{ mb: 3 }}>
-          <Typography component="label" sx={{ 
-            display: 'block', 
-            mb: 1, 
+          <Typography component="label" sx={{
+            display: 'block',
+            mb: 1,
             fontSize: '22px',
             fontWeight: 400,
             color: '#000'
           }}>
             Category <span style={{ color: '#FF0000' }}>*</span>
           </Typography>
-          <FormControl sx={{width:'340px'}}>
+          <FormControl sx={{ width: '340px' }}>
             <Select
               value={formData.category}
               onChange={handleCategoryChange}
@@ -85,10 +86,10 @@ const FormComponent: React.FC = () => {
                   component="img"
                   src="/src/assets/img/icons/v.png"
                   alt="Arrow Down"
-                  sx={{ width: '16px', height: '16px',mr:1.5 }}
+                  sx={{ width: '16px', height: '16px', mr: 1.5 }}
                 />
               )}
-              sx={{ 
+              sx={{
                 height: '44px',
                 backgroundColor: '#FFFFFF',
                 '& .MuiOutlinedInput-notchedOutline': {
@@ -103,9 +104,9 @@ const FormComponent: React.FC = () => {
         </Box>
 
         <Box sx={{ mb: 3 }}>
-          <Typography component="label" sx={{ 
-            display: 'block', 
-            mb: 1, 
+          <Typography component="label" sx={{
+            display: 'block',
+            mb: 1,
             fontSize: '22px',
             fontWeight: 400,
             color: '#000'
@@ -117,9 +118,9 @@ const FormComponent: React.FC = () => {
             value={formData.title}
             onChange={handleTextFieldChange('title')}
             variant="outlined"
-            sx={{ 
+            sx={{
               backgroundColor: '#FFFFFF',
-              width:'341px',
+              width: '341px',
               '& .MuiOutlinedInput-root': {
                 height: '44px',
                 '& fieldset': {
@@ -131,9 +132,9 @@ const FormComponent: React.FC = () => {
         </Box>
 
         <Box sx={{ mb: 3 }}>
-          <Typography component="label" sx={{ 
-            display: 'block', 
-            mb: 1, 
+          <Typography component="label" sx={{
+            display: 'block',
+            mb: 1,
             fontSize: '22px',
             fontWeight: 400,
             color: '#000'
@@ -154,13 +155,13 @@ const FormComponent: React.FC = () => {
                       component="img"
                       src="/src/assets/img/icons/calendar.png"
                       alt="Calendar"
-                      sx={{ width: '16px', height: '16px',mr:0 }}
+                      sx={{ width: '16px', height: '16px', mr: 0 }}
                     />
                   </IconButton>
                 </InputAdornment>
               )
             }}
-            sx={{ 
+            sx={{
               backgroundColor: '#FFFFFF',
               '& .MuiOutlinedInput-root': {
                 height: '44px',
@@ -173,9 +174,9 @@ const FormComponent: React.FC = () => {
         </Box>
 
         <Box sx={{ mb: 3 }}>
-          <Typography component="label" sx={{ 
-            display: 'block', 
-            mb: 1, 
+          <Typography component="label" sx={{
+            display: 'block',
+            mb: 1,
             fontSize: '22px',
             fontWeight: 400,
             color: '#000'
@@ -197,10 +198,10 @@ const FormComponent: React.FC = () => {
                   component="img"
                   src="/src/assets/img/icons/v.png"
                   alt="Arrow Down"
-                  sx={{ width: '16px', height: '16px',mr:1.5 }}
+                  sx={{ width: '16px', height: '16px', mr: 1.5 }}
                 />
               )}
-              sx={{ 
+              sx={{
                 height: '44px',
                 backgroundColor: '#FFFFFF',
                 '& .MuiOutlinedInput-notchedOutline': {

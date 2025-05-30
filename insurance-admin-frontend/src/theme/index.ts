@@ -17,7 +17,6 @@ const theme = createTheme({
     },
   },
   typography: {
-    // Set DB Helvethaica X as default font for all typography
     fontFamily: '"DB Helvethaica X", "Roboto", "Helvetica Neue", "Arial", sans-serif',
   },
   components: {
@@ -29,7 +28,6 @@ const theme = createTheme({
         },
       },
     },
-    // Override Typography component specifically
     MuiTypography: {
       defaultProps: {
         fontFamily: '"DB Helvethaica X", sans-serif',

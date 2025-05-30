@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { Box } from '@mui/material';
-import { Sidebar } from '../components/common/Sidebar';
-import { Topbar } from '../components/common/Topbar';
-import News from '../components/common/News';
- // Import the News component
+import { Box } from '@mui/material'
+import { useState } from 'react'
+import Topbar from '../../components/common/Topbar'
+import Sidebar from '../../components/common/Sidebar'
+import FormPromotion from '../../components/common/FormPromotion'
 
-const Home: React.FC = () => {
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+export default function CreatePromotionScreen() {
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -16,7 +15,7 @@ const Home: React.FC = () => {
     <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Left side - Sidebar (fixed width) */}
       {sidebarOpen && (
-        <Box sx={{ 
+        <Box sx={{
           width: '255px',
           minWidth: '255px',
           height: '100vh',
@@ -25,36 +24,35 @@ const Home: React.FC = () => {
           <Sidebar />
         </Box>
       )}
-      
+
       {/* Right side - Topbar and content */}
-      <Box sx={{ 
+      <Box sx={{
         display: 'flex',
         flexDirection: 'column',
         flexGrow: 1,
         height: '100vh',
       }}>
         {/* Topbar */}
-        <Box sx={{ 
+        <Box sx={{
           height: '55px',
-          ml:0.5,
+          ml: 0.5,
           borderBottom: '1px solid #e0e0e0'
         }}>
           <Topbar onToggleSidebar={toggleSidebar} />
         </Box>
-        
+
         {/* Main content area */}
-        <Box sx={{ 
+        <Box sx={{
           flexGrow: 1,
           overflow: 'auto',
           backgroundColor: '#f8f9fa'
         }}>
 
-          <News />
+          <FormPromotion />
 
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
 
-export default Home;
+}

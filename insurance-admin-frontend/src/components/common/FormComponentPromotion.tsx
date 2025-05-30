@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
+import {
   Box,
   FormControl,
   InputLabel,
@@ -24,7 +24,7 @@ interface FormData {
 const FormComponentPromotion: React.FC = () => {
   // Add useNavigate hook for routing
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState<FormData>({
     category: 'Promotion',
     title: '',
@@ -49,7 +49,7 @@ const FormComponentPromotion: React.FC = () => {
       [field]: event.target.value as string
     });
   };
-  
+
   // Handle category change specifically
   const handleCategoryChange = (event: any) => {
     const newCategory = event.target.value as string;
@@ -57,12 +57,12 @@ const FormComponentPromotion: React.FC = () => {
       ...formData,
       category: newCategory
     });
-    
+
     // Navigate based on the selected category
-    if (newCategory === 'Promotion') {
-      navigate('/Create/Promotion', { replace: true });
-    } else if (newCategory === 'Banner') {
-      navigate('/Create/Banner', { replace: true });
+    if (newCategory === 'Banner') {
+      navigate('/banner/create');
+    } else if (newCategory === 'Promotion') {
+      navigate('/promotion/create');
     }
   };
 
@@ -70,9 +70,9 @@ const FormComponentPromotion: React.FC = () => {
     <Box sx={{ display: 'flex' }}>
       <Box sx={{ width: '100%', maxWidth: '540px' }}>
         <Box sx={{ mb: 3 }}>
-          <Typography component="label" sx={{ 
-            display: 'block', 
-            mb: 1, 
+          <Typography component="label" sx={{
+            display: 'block',
+            mb: 1,
             fontSize: '22px',
             fontWeight: 400,
             color: '#000'
@@ -89,10 +89,10 @@ const FormComponentPromotion: React.FC = () => {
                   component="img"
                   src="/src/assets/img/icons/v.png"
                   alt="Arrow Down"
-                  sx={{ width: '16px', height: '16px',mr:1.5 }}
+                  sx={{ width: '16px', height: '16px', mr: 1.5 }}
                 />
               )}
-              sx={{ 
+              sx={{
                 height: '44px',
                 backgroundColor: '#FFFFFF',
                 '& .MuiOutlinedInput-notchedOutline': {
@@ -107,9 +107,9 @@ const FormComponentPromotion: React.FC = () => {
         </Box>
 
         <Box sx={{ mb: 3 }}>
-          <Typography component="label" sx={{ 
-            display: 'block', 
-            mb: 1, 
+          <Typography component="label" sx={{
+            display: 'block',
+            mb: 1,
             fontSize: '22px',
             fontWeight: 400,
             color: '#000'
@@ -121,9 +121,9 @@ const FormComponentPromotion: React.FC = () => {
             value={formData.title}
             onChange={handleTextFieldChange('title')}
             variant="outlined"
-            sx={{ 
+            sx={{
               backgroundColor: '#FFFFFF',
-              width:'341px',
+              width: '341px',
               '& .MuiOutlinedInput-root': {
                 height: '44px',
                 '& fieldset': {
@@ -135,9 +135,9 @@ const FormComponentPromotion: React.FC = () => {
         </Box>
 
         <Box sx={{ mb: 3 }}>
-          <Typography component="label" sx={{ 
-            display: 'block', 
-            mb: 1, 
+          <Typography component="label" sx={{
+            display: 'block',
+            mb: 1,
             fontSize: '22px',
             fontWeight: 400,
             color: '#000'
@@ -164,7 +164,7 @@ const FormComponentPromotion: React.FC = () => {
                 </InputAdornment>
               )
             }}
-            sx={{ 
+            sx={{
               backgroundColor: '#FFFFFF',
               '& .MuiOutlinedInput-root': {
                 height: '44px',
@@ -177,9 +177,9 @@ const FormComponentPromotion: React.FC = () => {
         </Box>
 
         <Box sx={{ mb: 3 }}>
-          <Typography component="label" sx={{ 
-            display: 'block', 
-            mb: 1, 
+          <Typography component="label" sx={{
+            display: 'block',
+            mb: 1,
             fontSize: '22px',
             fontWeight: 400,
             color: '#000'
@@ -201,10 +201,10 @@ const FormComponentPromotion: React.FC = () => {
                   component="img"
                   src="/src/assets/img/icons/v.png"
                   alt="Arrow Down"
-                  sx={{ width: '16px', height: '16px',mr:1.5 }}
+                  sx={{ width: '16px', height: '16px', mr: 1.5 }}
                 />
               )}
-              sx={{ 
+              sx={{
                 height: '44px',
                 backgroundColor: '#FFFFFF',
                 '& .MuiOutlinedInput-notchedOutline': {

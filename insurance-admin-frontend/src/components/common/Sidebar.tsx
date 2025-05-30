@@ -1,14 +1,13 @@
-import React from 'react';
 import { Box, Typography, List, ListItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-interface SidebarItemProps {
+interface ISidebarItemProps {
   iconSrc: string;
   text: string;
   active?: boolean;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ iconSrc, text, active = false }) => {
+export function SidebarItem({ iconSrc, text, active = false }: ISidebarItemProps) {
   return (
     <ListItem
       sx={{
@@ -67,9 +66,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ iconSrc, text, active = false
   );
 };
 
-export const Sidebar: React.FC = () => {
+export default function Sidebar() {
   const navigate = useNavigate();
-
+  
   const handleLogoClick = () => {
     navigate('/');
   };
@@ -112,6 +111,7 @@ export const Sidebar: React.FC = () => {
               mb: '20px',
               cursor: 'pointer',
             }}
+            draggable={false}
           />
         </Box>
       </Box>

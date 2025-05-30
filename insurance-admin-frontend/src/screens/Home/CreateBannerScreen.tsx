@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
-import FormComponent from "./FormComponent";
+import FormComponent from "../../components/common/FormComponent";
 
 interface ContentItem {
   id: number;
@@ -17,7 +17,7 @@ interface ContentItem {
   link: string;
 }
 
-const Form: React.FC = () => {
+export default function CreateBannerScreen() {
   const [contents, setContents] = useState<ContentItem[]>([
     { id: 1, file: "cover01.jpg", link: "" },
     { id: 2, file: "banner2.jpg", link: "" },
@@ -584,5 +584,3 @@ const Form: React.FC = () => {
     </Box>
   );
 };
-
-export default Form;

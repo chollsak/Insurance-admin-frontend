@@ -1,23 +1,44 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import theme from './theme'; // Make sure you have this file
-import News from './screens/Home';
-import Create from './screens/CreateBanner';
-import CreatePromotion from './screens/CreatePromotion';
-// Import other screens/components as needed
+import theme from './theme';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ContentCreateScreen, HomeScreen, CreatePromotionScreen, CreateBannerScreen } from './screens';
+import { AppLayout } from './components';
+import { CommonProvider } from './contexts';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // suspense: true,
+      staleTime: 1000 * 60 * 5,
+    },
+  },
+});
+
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <AppLayout />,
+    children: [
+      { index: true, element: <HomeScreen /> },
+      { path: 'banner/create', element: <CreateBannerScreen /> },
+      { path: 'promotion/create', element: <CreatePromotionScreen /> },
+      { path: 'content/new', element: <ContentCreateScreen /> },
+    ],
+  },
+]);
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<News />} />
-          <Route path="/Create/Banner" element={<Create />} />
-          <Route path="/Create/Promotion" element={<CreatePromotion />} />
-        </Routes>
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <CommonProvider>
+          <RouterProvider router={router} />
+        </CommonProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }
