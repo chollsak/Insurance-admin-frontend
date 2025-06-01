@@ -25,6 +25,12 @@ import {
   type SxProps,
   type Theme
 } from '@mui/material';
+import HomeFilledIcon from '@mui/icons-material/HomeFilled';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import LastPageIcon from '@mui/icons-material/LastPage';
+import FirstPageIcon from '@mui/icons-material/FirstPage';
 import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import type { ContentCategory, ContentModel } from '../../models';
 import { useContentsQuery } from '../../hooks/useContent';
@@ -284,6 +290,7 @@ export default function HomeScreen() {
           <Typography fontWeight={'bold'} sx={{ mx: 1, color: '#666', fontSize: '24px' }}>|</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box
+              component="a"
               onClick={() => {
                 if (!isRootPath) {
                   navigate("/")
@@ -292,7 +299,6 @@ export default function HomeScreen() {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                textDecoration: 'none',
                 color: '#4285F4',
                 mr: 0.5,
                 ml: 2,
@@ -409,13 +415,7 @@ export default function HomeScreen() {
             value={rowsPerPage.toString()}
             onChange={handleRowsPerPageChange}
             size="small"
-            IconComponent={() => (
-              <Box
-                component="img"
-                src="/src/assets/img/icons/v.png"
-                alt="Arrow Down"
-                sx={{ width: '20px', height: '20px', mr: 1 }} />
-            )}
+            IconComponent={ExpandMoreIcon}
             sx={{
               mr: 2,
               minWidth: 60,
@@ -443,10 +443,7 @@ export default function HomeScreen() {
             disabled={!contentData || currentPage === 0}
             onClick={handleFirstPage}
             sx={{ color: '#ccc' }}>
-            <Box
-              component="img"
-              src="/src/assets/img/icons/double-arrow-left.png"
-              alt="First Page"
+            <FirstPageIcon
               sx={{
                 width: '20px',
                 height: '20px',
@@ -458,44 +455,32 @@ export default function HomeScreen() {
             disabled={!contentData || currentPage === 0}
             onClick={handlePreviousPage}
             sx={{ color: '#ccc' }}>
-            <Box
-              component="img"
-              src="/src/assets/img/icons/arrow-left.png"
-              alt="Previous Page"
-              sx={{
-                width: '20px',
-                height: '20px',
-                opacity: !contentData || currentPage === 0 ? 0.5 : 1
-              }} />
+            <ChevronLeftIcon sx={{
+              width: '20px',
+              height: '20px',
+              opacity: !contentData || currentPage === 0 ? 0.5 : 1
+            }} />
+
           </IconButton>
           <IconButton
             size="small"
             disabled={!contentData || currentPage >= contentData.paging.totalPage - 1}
             onClick={handleNextPage}>
-            <Box
-              component="img"
-              src="/src/assets/img/icons/arrow-right.png"
-              alt="Next Page"
-              sx={{
-                width: '20px',
-                height: '20px',
-                opacity: !contentData || currentPage >= contentData.paging.totalPage - 1 ? 0.5 : 1
-              }} />
+            <ChevronRightIcon sx={{
+              width: '20px',
+              height: '20px',
+              opacity: !contentData || currentPage >= contentData.paging.totalPage - 1 ? 0.5 : 1
+            }} />
           </IconButton>
           <IconButton
             size="small"
             disabled={!contentData || currentPage >= contentData.paging.totalPage - 1}
             onClick={handleLastPage}>
-            <Box
-              component="img"
-              src="/src/assets/img/icons/double-arrow-right.png"
-              alt="Last Page"
-              sx={{
-                width: '20px',
-                height: '20px',
-                opacity: !contentData || currentPage >= contentData.paging.totalPage - 1 ? 0.5 : 1
-              }}
-            />
+            <LastPageIcon sx={{
+              width: '20px',
+              height: '20px',
+              opacity: !contentData || currentPage >= contentData.paging.totalPage - 1 ? 0.5 : 1
+            }} />
           </IconButton>
         </Box>
       </Box>
