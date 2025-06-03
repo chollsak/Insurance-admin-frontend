@@ -1,4 +1,4 @@
-import type { ContentStatus } from "../common/Status";
+import type { ContentStatus } from "./BaseContentForm";
 
 export interface ContentCommonModel {
     id: string;

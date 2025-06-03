@@ -1,2 +1,4 @@
-export { default as Sidebar } from "./Sidebar";
-export { default as Topbar } from "./Topbar";
+export * from "./Icons";
+export * from "./Layouts";
+export * from "./Header";
+export * from "./Sidebar";

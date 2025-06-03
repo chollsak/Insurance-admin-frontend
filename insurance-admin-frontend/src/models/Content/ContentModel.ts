@@ -1,4 +1,5 @@
-import type { ApiResponse, ContentCategory, ContentStatus } from "../common";
+import type { ApiResponse} from "../common";
+import type { ContentCategory, ContentStatus } from "./BaseContentForm";
 
 export interface ContentModel {
     id: string;

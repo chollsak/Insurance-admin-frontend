@@ -1,16 +1,15 @@
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ContentCreateScreen, HomeScreen, CreatePromotionScreen, CreateBannerScreen } from './screens';
+import { ContentCreateScreen, HomeScreen, } from './screens';
 import { AppLayout } from './components';
 import { CommonProvider } from './contexts';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // suspense: true,
       staleTime: 1000 * 60 * 5,
     },
   },
@@ -23,8 +22,6 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { index: true, element: <HomeScreen /> },
-      { path: 'banner/create', element: <CreateBannerScreen /> },
-      { path: 'promotion/create', element: <CreatePromotionScreen /> },
       { path: 'content/new', element: <ContentCreateScreen /> },
     ],
   },

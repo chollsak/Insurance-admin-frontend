@@ -8,10 +8,11 @@ import {
     IconButton,
     Typography,
     type SxProps,
-    type Theme
-} from '@mui/material';
-import type { ContentModel, ContentResponse } from '../../../models';
-import { mapAPICategoryToUI } from '../../../utils';
+    type Theme,
+    Stack
+} from "@mui/material";
+import type { ContentModel, ContentResponse } from "../../../models";
+import { contentCategoryTranslations } from "../../../common";
 
 interface DisplayContentListProps {
     newsItems: ContentModel[];
@@ -28,7 +29,7 @@ interface DisplayContentListProps {
     onDelete: (item: ContentModel) => void;
 }
 
-export default function DisplayContentList({
+export function DisplayContentList({
     newsItems,
     contentData,
     draggedOverIndex,
@@ -43,105 +44,105 @@ export default function DisplayContentList({
     onDelete
 }: DisplayContentListProps) {
     const columnWidths = {
-        no: '5%',
-        title: '40%',
-        category: '10%',
-        status: '10%',
-        actions: '10%',
-        move: '5%'
+        no: "5%",
+        title: "40%",
+        category: "10%",
+        status: "10%",
+        actions: "10%",
+        move: "5%"
     };
 
     return (
-        <Box sx={{ 
+        <Box sx={{
             ...sx,
-            border: 'none',
+            border: "none",
             borderRadius: 0,
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%'
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            height: "100%"
         }}>
-            <Box sx={{ overflow: 'hidden', flexShrink: 0 }}>
-                <Table sx={{ minWidth: 650, tableLayout: 'fixed' }}>
+            <Box sx={{ overflow: "hidden", flexShrink: 0 }}>
+                <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
                     <TableHead>
-                        <TableRow sx={{ height: '40px' }}>
+                        <TableRow sx={{ height: "40px" }}>
                             <TableCell
                                 align="center"
                                 sx={{
-                                    height: '40px',
-                                    padding: '0px 16px',
+                                    height: "40px",
+                                    padding: "0px 16px",
                                     width: columnWidths.no,
-                                    bgcolor: '#CEDFFF',
-                                    borderBottom: 'none',
-                                    color: '#05058C',
-                                    fontWeight: 'bold',
-                                    fontSize: '16px'
+                                    bgcolor: "#CEDFFF",
+                                    borderBottom: "none",
+                                    color: "#05058C",
+                                    fontWeight: "bold",
+                                    fontSize: "16px"
                                 }}>
                                 No.
                             </TableCell>
                             <TableCell
                                 sx={{
-                                    height: '40px',
-                                    padding: '0px 16px',
+                                    height: "40px",
+                                    padding: "0px 16px",
                                     width: columnWidths.title,
-                                    bgcolor: '#CEDFFF',
-                                    borderBottom: 'none',
-                                    color: '#05058C',
-                                    fontWeight: 'bold',
-                                    fontSize: '16px'
+                                    bgcolor: "#CEDFFF",
+                                    borderBottom: "none",
+                                    color: "#05058C",
+                                    fontWeight: "bold",
+                                    fontSize: "16px"
                                 }}>
                                 Title
                             </TableCell>
                             <TableCell
                                 sx={{
-                                    height: '40px',
-                                    padding: '0px 16px',
+                                    height: "40px",
+                                    padding: "0px 16px",
                                     width: columnWidths.category,
-                                    bgcolor: '#CEDFFF',
-                                    borderBottom: 'none',
-                                    color: '#05058C',
-                                    fontWeight: 'bold',
-                                    fontSize: '16px'
+                                    bgcolor: "#CEDFFF",
+                                    borderBottom: "none",
+                                    color: "#05058C",
+                                    fontWeight: "bold",
+                                    fontSize: "16px"
                                 }}>
                                 Category
                             </TableCell>
                             <TableCell
                                 sx={{
-                                    height: '40px',
-                                    padding: '0px 16px',
+                                    height: "40px",
+                                    padding: "0px 16px",
                                     width: columnWidths.status,
-                                    bgcolor: '#CEDFFF',
-                                    borderBottom: 'none',
-                                    color: '#05058C',
-                                    fontWeight: 'bold',
-                                    fontSize: '16px'
+                                    bgcolor: "#CEDFFF",
+                                    borderBottom: "none",
+                                    color: "#05058C",
+                                    fontWeight: "bold",
+                                    fontSize: "16px"
                                 }}>
                                 Status
                             </TableCell>
                             <TableCell
                                 align="center"
                                 sx={{
-                                    height: '40px',
-                                    padding: '0px 16px',
+                                    height: "40px",
+                                    padding: "0px 16px",
                                     width: columnWidths.actions,
-                                    bgcolor: '#CEDFFF',
-                                    borderBottom: 'none',
-                                    color: '#05058C',
-                                    fontWeight: 'bold',
-                                    fontSize: '16px'
+                                    bgcolor: "#CEDFFF",
+                                    borderBottom: "none",
+                                    color: "#05058C",
+                                    fontWeight: "bold",
+                                    fontSize: "16px"
                                 }}>
                             </TableCell>
                             <TableCell
                                 align="center"
                                 sx={{
-                                    height: '40px',
-                                    padding: '0px 16px',
+                                    height: "40px",
+                                    padding: "0px 16px",
                                     width: columnWidths.move,
-                                    bgcolor: '#CEDFFF',
-                                    borderBottom: 'none',
-                                    color: '#05058C',
-                                    fontWeight: 'bold',
-                                    fontSize: '16px'
+                                    bgcolor: "#CEDFFF",
+                                    borderBottom: "none",
+                                    color: "#05058C",
+                                    fontWeight: "bold",
+                                    fontSize: "16px"
                                 }}>
                                 Move
                             </TableCell>
@@ -150,8 +151,8 @@ export default function DisplayContentList({
                 </Table>
             </Box>
 
-            <Box sx={{ overflowY: 'auto', flexGrow: 1 }}>
-                <Table sx={{ minWidth: 650, tableLayout: 'fixed' }}>
+            <Box sx={{ overflowY: "auto", flexGrow: 1 }}>
+                <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
                     <TableBody>
                         {newsItems.map((item, index) => (
                             <TableRow
@@ -162,63 +163,63 @@ export default function DisplayContentList({
                                 onDrop={(e) => onDrop(e, index)}
                                 onDragEnd={onDragEnd}
                                 sx={{
-                                    height: '40px',
-                                    '&:nth-of-type(odd)': { bgcolor: '#fafafa' },
-                                    '&:nth-of-type(even)': { bgcolor: 'white' },
-                                    bgcolor: draggedOverIndex === index ? 'rgba(25, 118, 210, 0.08)' : undefined,
+                                    height: "40px",
+                                    "&:nth-of-type(odd)": { bgcolor: "#fafafa" },
+                                    "&:nth-of-type(even)": { bgcolor: "white" },
+                                    bgcolor: draggedOverIndex === index ? "rgba(25, 118, 210, 0.08)" : undefined,
                                     opacity: draggedItem?.id === item.id ? 0.5 : 1,
-                                    transition: 'background-color 0.2s, opacity 0.2s',
-                                    cursor: 'default'
+                                    transition: "background-color 0.2s, opacity 0.2s",
+                                    cursor: "default"
                                 }}>
                                 <TableCell
                                     align="center"
                                     sx={{
-                                        height: '40px',
-                                        padding: '0px 16px',
+                                        height: "40px",
+                                        padding: "0px 16px",
                                         width: columnWidths.no,
-                                        color: '#525252',
-                                        fontSize: '22px',
-                                        fontWeight: '400',
-                                        borderBottom: '1px solid #f0f0f0'
+                                        color: "#525252",
+                                        fontSize: "22px",
+                                        fontWeight: "400",
+                                        borderBottom: "1px solid #f0f0f0"
                                     }}>
                                     {contentData ? contentData.paging.pageNo * contentData.paging.pageSize + index + 1 : index + 1}
                                 </TableCell>
                                 <TableCell
                                     sx={{
-                                        height: '40px',
-                                        padding: '0px 16px',
+                                        height: "40px",
+                                        padding: "0px 16px",
                                         width: columnWidths.title,
-                                        color: '#525252',
-                                        fontSize: '22px',
-                                        fontWeight: '400',
-                                        borderBottom: '1px solid #f0f0f0'
+                                        color: "#525252",
+                                        fontSize: "22px",
+                                        fontWeight: "400",
+                                        borderBottom: "1px solid #f0f0f0"
                                     }}>
                                     {item.title}
                                 </TableCell>
                                 <TableCell
                                     sx={{
-                                        height: '40px',
-                                        padding: '0px 16px',
+                                        height: "40px",
+                                        padding: "0px 16px",
                                         width: columnWidths.category,
-                                        fontWeight: '400',
-                                        color: '#525252',
-                                        fontSize: '20px',
-                                        borderBottom: '1px solid #f0f0f0'
+                                        fontWeight: "400",
+                                        color: "#525252",
+                                        fontSize: "20px",
+                                        borderBottom: "1px solid #f0f0f0"
                                     }}>
-                                    {mapAPICategoryToUI(item.category)}
+                                    {contentCategoryTranslations[item.category]["th"]}
                                 </TableCell>
                                 <TableCell
                                     sx={{
-                                        height: '40px',
-                                        padding: '0px 16px',
+                                        height: "40px",
+                                        padding: "0px 16px",
                                         width: columnWidths.status,
-                                        borderBottom: '1px solid #f0f0f0'
+                                        borderBottom: "1px solid #f0f0f0"
                                     }}>
                                     <Typography
                                         sx={{
-                                            color: item.status === 'ACTIVE' ? '#0DAB26' : '#CA3B3B',
-                                            fontWeight: '400',
-                                            fontSize: '22px'
+                                            color: item.status === "ACTIVE" ? "#0DAB26" : "#CA3B3B",
+                                            fontWeight: "400",
+                                            fontSize: "22px"
                                         }}>
                                         {item.status}
                                     </Typography>
@@ -226,59 +227,43 @@ export default function DisplayContentList({
                                 <TableCell
                                     align="center"
                                     sx={{
-                                        height: '40px',
-                                        padding: '0px 16px',
+                                        height: "40px",
+                                        padding: "0px 16px",
                                         width: columnWidths.actions,
-                                        borderBottom: '1px solid #f0f0f0',
+                                        borderBottom: "1px solid #f0f0f0",
                                     }}>
-                                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <Stack direction="row" justifyContent="center">
                                         <IconButton
-                                            size="small"
-                                            sx={{
-                                                color: '#555',
-                                                paddingRight: '20px',
-                                                '&:hover': {
-                                                    color: '#1976d2'
-                                                }
-                                            }}
                                             onClick={() => onEdit(item)}>
-                                            <Box component={'img'} src='src/assets/img/icons/pen.png' sx={{ width: '16px' }} />
+                                            <Box component={"img"} src="src/assets/img/icons/pen.png" sx={{ width: "16px", height: "16px", }} />
                                         </IconButton>
                                         <IconButton
-                                            size="small"
-                                            sx={{
-                                                color: '#555',
-                                                padding: '4px',
-                                                '&:hover': {
-                                                    color: '#d32f2f'
-                                                }
-                                            }}
                                             onClick={() => onDelete(item)}>
-                                            <Box component={'img'} src='src/assets/img/icons/bin.png' sx={{ width: '16px' }} />
+                                            <Box component={"img"} src="src/assets/img/icons/bin.png" sx={{ width: "16px", height: "16px", }} />
                                         </IconButton>
-                                    </Box>
+                                    </Stack>
                                 </TableCell>
                                 <TableCell
                                     align="center"
                                     sx={{
-                                        height: '40px',
-                                        padding: '0px 16px',
+                                        height: "40px",
+                                        padding: "0px 16px",
                                         width: columnWidths.move,
-                                        borderBottom: '1px solid #f0f0f0'
+                                        borderBottom: "1px solid #f0f0f0"
                                     }}>
-                                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <Box sx={{ display: "flex", justifyContent: "center" }}>
                                         <IconButton
                                             size="small"
                                             sx={{
-                                                color: '#555',
-                                                padding: '4px',
-                                                cursor: 'grab',
-                                                '&:active': {
-                                                    cursor: 'grabbing'
+                                                color: "#555",
+                                                padding: "4px",
+                                                cursor: "grab",
+                                                "&:active": {
+                                                    cursor: "grabbing"
                                                 }
                                             }}
                                             className="drag-handle">
-                                            <Box component={'img'} src='src/assets/img/icons/drag.png' sx={{ width: '24px' }} />
+                                            <Box component={"img"} src="src/assets/img/icons/drag.png" sx={{ width: "24px" }} />
                                         </IconButton>
                                     </Box>
                                 </TableCell>
@@ -290,38 +275,38 @@ export default function DisplayContentList({
                                 <TableRow
                                     key={`empty-${index}`}
                                     sx={{
-                                        height: '40px',
-                                        '&:nth-of-type(odd)': { bgcolor: '#fafafa' },
-                                        '&:nth-of-type(even)': { bgcolor: 'white' }
+                                        height: "40px",
+                                        "&:nth-of-type(odd)": { bgcolor: "#fafafa" },
+                                        "&:nth-of-type(even)": { bgcolor: "white" }
                                     }}>
-                                    <TableCell sx={{ 
-                                        height: '40px', 
-                                        borderBottom: '1px solid #f0f0f0',
+                                    <TableCell sx={{
+                                        height: "40px",
+                                        borderBottom: "1px solid #f0f0f0",
                                         width: columnWidths.no
                                     }} />
-                                    <TableCell sx={{ 
-                                        height: '40px', 
-                                        borderBottom: '1px solid #f0f0f0',
+                                    <TableCell sx={{
+                                        height: "40px",
+                                        borderBottom: "1px solid #f0f0f0",
                                         width: columnWidths.title
                                     }} />
-                                    <TableCell sx={{ 
-                                        height: '40px', 
-                                        borderBottom: '1px solid #f0f0f0',
+                                    <TableCell sx={{
+                                        height: "40px",
+                                        borderBottom: "1px solid #f0f0f0",
                                         width: columnWidths.category
                                     }} />
-                                    <TableCell sx={{ 
-                                        height: '40px', 
-                                        borderBottom: '1px solid #f0f0f0',
+                                    <TableCell sx={{
+                                        height: "40px",
+                                        borderBottom: "1px solid #f0f0f0",
                                         width: columnWidths.status
                                     }} />
-                                    <TableCell sx={{ 
-                                        height: '40px', 
-                                        borderBottom: '1px solid #f0f0f0',
+                                    <TableCell sx={{
+                                        height: "40px",
+                                        borderBottom: "1px solid #f0f0f0",
                                         width: columnWidths.actions
                                     }} />
-                                    <TableCell sx={{ 
-                                        height: '40px', 
-                                        borderBottom: '1px solid #f0f0f0',
+                                    <TableCell sx={{
+                                        height: "40px",
+                                        borderBottom: "1px solid #f0f0f0",
                                         width: columnWidths.move
                                     }} />
                                 </TableRow>
@@ -330,6 +315,6 @@ export default function DisplayContentList({
                     </TableBody>
                 </Table>
             </Box>
-        </Box>
+        </Box >
     );
 }

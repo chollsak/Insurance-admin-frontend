@@ -1,3 +1,2 @@
-export { default as AppLayout } from "./layouts/AppLayout";
+export * from "./common";
 export * from "./Home";
-export * from "./Icons";

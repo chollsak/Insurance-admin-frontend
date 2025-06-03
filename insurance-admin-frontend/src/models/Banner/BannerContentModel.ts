@@ -3,7 +3,3 @@ export interface BannerContentModel {
     contentImagePath: string;
     contentHyperLink: string;
 }
-
-export interface BannerContentRequest {
-    
-}
