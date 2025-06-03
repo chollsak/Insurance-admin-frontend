@@ -1,4 +1,4 @@
-import type { ContentStatus } from "./BaseContentForm";
+import type { ContentCategory, ContentStatus } from "./BaseContentForm";
 
 export interface ContentCommonModel {
     id: string;
@@ -6,4 +6,5 @@ export interface ContentCommonModel {
     effectiveFrom: string;
     effectiveTo: string;
     status: ContentStatus;
+    category: ContentCategory;
 }
