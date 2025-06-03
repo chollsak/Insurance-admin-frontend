@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useLocation, useNavigate, useOutletContext, } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate, useOutletContext, } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -9,7 +9,6 @@ import {
   FormControl,
   Button,
   type SelectChangeEvent,
-  Divider,
   CircularProgress,
   DialogTitle,
   Dialog,
@@ -17,16 +16,17 @@ import {
   DialogContent,
   DialogContentText,
   type SxProps,
-  type Theme
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import LastPageIcon from '@mui/icons-material/LastPage';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import type { ContentCategory, ContentModel } from '../../models';
-import { useContentsQuery, useDeleteContent } from '../../hooks';
-import { DisplayContentList } from '../../components';
+  type Theme,
+  Stack
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import LastPageIcon from "@mui/icons-material/LastPage";
+import FirstPageIcon from "@mui/icons-material/FirstPage";
+import type { ContentCategory, ContentModel } from "../../models";
+import { useContentsQuery, useDeleteContent } from "../../hooks";
+import { DisplayContentList } from "../../components";
 
 export default function HomeScreen() {
   const navigate = useNavigate();
@@ -34,7 +34,6 @@ export default function HomeScreen() {
 
   const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
 
-  const isRootPath = location.pathname === '/';
   const [selectedCategory, setSelectedCategory] = useState<"ALL" | ContentCategory>("ALL");
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -54,7 +53,7 @@ export default function HomeScreen() {
   const [draggedOverIndex, setDraggedOverIndex] = useState<number | null>(null);
 
   const handleNewClick = () => {
-    navigate('/content/new');
+    navigate("/content/new");
   };
 
   const handleCategoryChange = (event: SelectChangeEvent): void => {
@@ -71,8 +70,8 @@ export default function HomeScreen() {
   const emptyRowsCount = Math.max(0, rowsPerPage - newsItems.length);
   const handleDragStart = (e: React.DragEvent<HTMLTableRowElement>, item: ContentModel): void => {
     setDraggedItem(item);
-    const dragImg = document.createElement('img');
-    dragImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    const dragImg = document.createElement("img");
+    dragImg.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     e.dataTransfer.setDragImage(dragImg, 0, 0);
   };
 
@@ -125,7 +124,7 @@ export default function HomeScreen() {
   };
 
   const getPaginationText = (): string => {
-    if (!contentData) return '0-0 of 0';
+    if (!contentData) return "0-0 of 0";
 
     const { pageNo, pageSize, totalRow } = contentData.paging;
     const start = pageNo * pageSize + 1;
@@ -198,69 +197,21 @@ export default function HomeScreen() {
         onClose={handleCloseDialog}
         onConfirm={handleConfirmDelete}
       />
-      <Box
+      <Stack
+        padding={3}
+        spacing={2}
         sx={{
           ...sx,
-          p: 3,
-          display: "flex",
-          flexDirection: "column",
         }}>
-        <Box sx={{ mb: 4 }}>
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            mb: 2
-          }}>
-            <Typography
-              variant="h5"
-              component="h1"
-              sx={{
-                color: '#05058C',
-                fontWeight: 'bold',
-                fontSize: '24px',
-                mr: 1
-              }}>
-              ข่าวสารและกิจกรรม
-            </Typography>
-            <Typography fontWeight={'bold'} sx={{ mx: 1, color: '#666', fontSize: '24px' }}>|</Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Box
-                component="a"
-                onClick={() => {
-                  if (!isRootPath) {
-                    navigate("/")
-                  }
-                }}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  color: '#4285F4',
-                  mr: 0.5,
-                  ml: 2,
-                  fontSize: '24px',
-                  fontWeight: 'light',
-                  cursor: "pointer",
-                }}>
-                <Box component={'img'} src='src/assets/img/news/homeicon.png' sx={{ mr: 0.5, width: "16px", height: "16px", }} />
-                <Typography sx={{ textDecoration: "underline", fontSize: "20px", lineHeight: "100%", }}>Home</Typography>
-              </Box>
-              <Typography sx={{ mx: 0.5, color: '#515252', fontSize: '24px', mr: 1 }}>/</Typography>
-              <Typography sx={{ color: '#515252', fontSize: '20px' }}>
-                ข่าวสารและกิจกรรม
-              </Typography>
-            </Box>
-          </Box>
-          <Divider sx={{ mt: -1.5 }} />
-        </Box>
-
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, mt: -2 }}>
-          <Typography fontSize={24} sx={{ fontWeight: 'bold', color: '#05058C' }}>
+        <ContentHeader />
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography fontSize={24} sx={{ fontWeight: "bold", color: "#05058C" }}>
             Result
           </Typography>
 
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography sx={{ mr: 2, color: '#555', fontWeight: 'regular', fontSize: '22px' }}>
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ mr: 2, color: "#555", fontWeight: "regular", fontSize: "22px" }}>
                 Select Category
               </Typography>
               <FormControl sx={{ minWidth: 210 }}>
@@ -271,8 +222,8 @@ export default function HomeScreen() {
                   IconComponent={ExpandMoreIcon}
                   sx={{
                     height: 40,
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#d0d0d0'
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#d0d0d0"
                     }
                   }}>
                   <MenuItem value="ALL">
@@ -293,26 +244,26 @@ export default function HomeScreen() {
                   component="img"
                   src="/src/assets/img/icons/add.png"
                   alt="Add"
-                  sx={{ width: '16px', height: '16px' }} />
+                  sx={{ width: "16px", height: "16px" }} />
               }
               onClick={handleNewClick}
               sx={{
-                bgcolor: '#3978E9',
+                bgcolor: "#3978E9",
                 height: 36,
-                width: '145px',
+                width: "145px",
                 px: 3,
-                '&:hover': { bgcolor: '#3367d6' },
+                "&:hover": { bgcolor: "#3367d6" },
                 borderRadius: 1,
-                fontSize: '22px'
+                fontSize: "22px"
               }}>
               New
             </Button>
           </Box>
-        </Box>
+        </Stack>
 
         {isLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-            <CircularProgress sx={{ color: '#3978E9' }} />
+          <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+            <CircularProgress sx={{ color: "#3978E9" }} />
           </Box>
         ) : <DisplayContentList
           newsItems={newsItems}
@@ -329,14 +280,13 @@ export default function HomeScreen() {
         />}
 
         {/* Pagination */}
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'end',
-          alignItems: 'end',
-          mt: 2,
-          color: '#555'
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Stack
+          direction="row"
+          justifyContent="end"
+          alignItems="center"
+          spacing={1}
+        >
+          <Stack direction="row" alignItems="center">
             <Typography variant="body2" sx={{ mr: 2 }}>
               Rows per page
             </Typography>
@@ -360,33 +310,31 @@ export default function HomeScreen() {
                   <MenuItem key={50} value={50}>50</MenuItem>
                 ]}
             </Select>
-          </Box>
+          </Stack>
 
-          <Typography variant="body2" sx={{ mb: 0.5 }}>
+          <Typography variant="body2" sx={{}}>
             {getPaginationText()}
           </Typography>
 
-          <Box>
+          <Stack direction="row" spacing={-1}>
             <IconButton
               size="small"
               disabled={!contentData || currentPage === 0}
-              onClick={handleFirstPage}
-              sx={{ color: '#ccc' }}>
+              onClick={handleFirstPage}>
               <FirstPageIcon
                 sx={{
-                  width: '20px',
-                  height: '20px',
+                  width: "20px",
+                  height: "20px",
                   opacity: !contentData || currentPage === 0 ? 0.5 : 1
                 }} />
             </IconButton>
             <IconButton
               size="small"
               disabled={!contentData || currentPage === 0}
-              onClick={handlePreviousPage}
-              sx={{ color: '#ccc' }}>
+              onClick={handlePreviousPage}>
               <ChevronLeftIcon sx={{
-                width: '20px',
-                height: '20px',
+                width: "20px",
+                height: "20px",
                 opacity: !contentData || currentPage === 0 ? 0.5 : 1
               }} />
 
@@ -396,8 +344,8 @@ export default function HomeScreen() {
               disabled={!contentData || currentPage >= contentData.paging.totalPage - 1}
               onClick={handleNextPage}>
               <ChevronRightIcon sx={{
-                width: '20px',
-                height: '20px',
+                width: "20px",
+                height: "20px",
                 opacity: !contentData || currentPage >= contentData.paging.totalPage - 1 ? 0.5 : 1
               }} />
             </IconButton>
@@ -406,14 +354,80 @@ export default function HomeScreen() {
               disabled={!contentData || currentPage >= contentData.paging.totalPage - 1}
               onClick={handleLastPage}>
               <LastPageIcon sx={{
-                width: '20px',
-                height: '20px',
+                width: "20px",
+                height: "20px",
                 opacity: !contentData || currentPage >= contentData.paging.totalPage - 1 ? 0.5 : 1
               }} />
             </IconButton>
-          </Box>
-        </Box>
-      </Box>
+          </Stack>
+        </Stack>
+      </Stack >
     </>
   );
 };
+
+function ContentHeader() {
+  return (
+    <Stack
+      direction="row"
+      spacing={1.5}
+      alignItems="flex-end"
+      borderBottom="1px solid #BDBDBD">
+      <Typography
+        variant="h5"
+        component="h1"
+        sx={{
+          color: "#05058C",
+          fontWeight: "bold",
+          fontSize: "24px",
+        }}>
+        ข่าวสารและกิจกรรม
+      </Typography>
+      <Typography
+        sx={{
+          color: "#666",
+          fontSize: "24px",
+          fontWeight: "900",
+        }}>
+        |
+      </Typography>
+      <Box sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}>
+        <Link
+          to="/"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            color: "#4285F4",
+
+            gap: "4px",
+          }}>
+          <Box
+            component="img"
+            src="/src/assets/img/news/homeicon.png"
+            sx={{ width: "16px", height: "16px" }} />
+          <Typography sx={{
+            fontSize: "24px",
+            fontWeight: "light",
+            lineHeight: "100%",
+          }}>
+            Home
+          </Typography>
+        </Link>
+        <Typography
+          sx={{
+            color: "#515252",
+            fontSize: "24px"
+          }}>
+          /
+        </Typography>
+        <Typography sx={{ color: "#515252", fontSize: "20px" }}>
+          ข่าวสารและกิจกรรม
+        </Typography>
+      </Box>
+    </Stack>
+  )
+}

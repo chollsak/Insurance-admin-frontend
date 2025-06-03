@@ -30,7 +30,7 @@ function PromotionHeader() {
     return (
         <Box
             sx={{
-                minHeight: "58px",
+                minHeight: "60px",
                 display: "flex",
                 alignItems: "center",
                 px: 3,
