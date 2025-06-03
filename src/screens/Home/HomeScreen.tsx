@@ -135,7 +135,7 @@ export default function HomeScreen() {
   };
 
   const handleEdit = (item: ContentModel) => {
-    // going to new page
+    navigate(`/content/edit/${item.id}`);
   };
 
   const ConfirmDeleteDialog = ({
