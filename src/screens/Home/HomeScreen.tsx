@@ -30,7 +30,6 @@ import { DisplayContentList } from "../../components";
 
 export default function HomeScreen() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
 
