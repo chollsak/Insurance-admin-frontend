@@ -83,8 +83,7 @@ export function Sidebar() {
         py: 3,
         pl: 2,
         pt: 3
-      }}
-    >
+      }}>
       {/* Logo and Company Name - Now Centered */}
       <Box sx={{
         display: 'flex',

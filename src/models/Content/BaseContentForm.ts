@@ -75,7 +75,9 @@ export const InsuranceSchema = BaseContentSchema.extend({
     coverImage: z
         .instanceof(File)
         .refine(file => file.size > 0, { message: "โปรดเลือกภาพปก" }),
-    coverHyperLink: z.string().url(),
+    iconImage: z
+        .instanceof(File)
+        .refine(file => file.size > 0, { message: "โปรดเลือกภาพ ICON" }),
     titleTh: z.string().min(3, "titleTh must be at least 3 characters"),
     titleEn: z.string().min(3, "titleEn must be at least 3 characters"),
     descriptionTh: z.string().min(3, "descriptionTh must be at least 3 characters"),
@@ -134,7 +136,7 @@ export const defaultInsurance: z.infer<typeof InsuranceSchema> = {
     status: "ACTIVE",
     effectiveDate: [null, null],
     coverImage: new File([], ""),
-    coverHyperLink: "",
+    iconImage: new File([], ""),
     titleTh: "",
     titleEn: "",
     descriptionTh: "",

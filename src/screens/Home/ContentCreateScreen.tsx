@@ -1,13 +1,17 @@
 import { Link, useOutletContext } from "react-router-dom";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
-import { Box, Button, Typography, type SxProps, type Theme } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, Typography, type SxProps, type Theme } from "@mui/material";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BannerInputGroup, BaseContentInputGroup, PromotionInputGroup } from "../../components";
 import { ContentFormSchema, defaultBanner, type ContentFormValues } from "../../models";
 import { useCreateContent } from "../../hooks";
 import { InsuranceInputGroup } from "../../components/Home/Insurance/InsuranceInputGroup";
+import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 export default function ContentCreateScreen() {
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const navigate = useNavigate();
     const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
     const methods = useForm<ContentFormValues>({
         resolver: zodResolver(ContentFormSchema),
@@ -22,14 +26,32 @@ export default function ContentCreateScreen() {
             onSuccess: (response) => {
                 console.log("Content created successfully");
                 console.log("response", response);
+                if (response.statusCode === 200 || response.statusCode === 201) {
+                    setShowSuccessModal(true);
+                }
             },
             onError: (error) => {
                 console.error("Error creating content:", error);
             }
         });
+
+    
+    };
+
+    const handleModalClose = () => {
+        setShowSuccessModal(false);
+        // Navigate to home page after closing modal
+        navigate('/');
+    };
+
+    const handleModalConfirm = () => {
+        setShowSuccessModal(false);
+        // Navigate to home page immediately
+        navigate("/");
     };
 
     return (
+        <>
         <FormProvider {...methods}>
             <Box sx={{
                 ...sx,
@@ -91,6 +113,85 @@ export default function ContentCreateScreen() {
                 )}
             </Box>
         </FormProvider>
+        <Dialog
+                open={showSuccessModal}
+                onClose={handleModalClose}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        borderRadius: "12px",
+                        padding: 2,
+                    }
+                }}
+            >
+                <DialogContent sx={{ textAlign: "center", py: 4 }}>
+                    <Box sx={{ mb: 2 }}>
+                        {/* Success Icon */}
+                        <Box
+                            sx={{
+                                width: 60,
+                                height: 60,
+                                borderRadius: "50%",
+                                bgcolor: "#4CAF50",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                margin: "0 auto",
+                                mb: 2,
+                            }}
+                        >
+                            <Typography sx={{ color: "white", fontSize: "24px", fontWeight: "bold" }}>
+                                ✓
+                            </Typography>
+                        </Box>
+                    </Box>
+                    
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            color: "#05058C",
+                            fontWeight: "bold",
+                            mb: 1,
+                        }}
+                    >
+                        สร้างสำเร็จ!
+                    </Typography>
+                    
+                    <Typography
+                        sx={{
+                            color: "#666",
+                            fontSize: "16px",
+                            mb: 3,
+                        }}
+                    >
+                        เนื้อหาได้ถูกสร้างเรียบร้อยแล้ว
+                    </Typography>
+                </DialogContent>
+                
+                <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
+                    <Button
+                        onClick={handleModalConfirm}
+                        variant="contained"
+                        sx={{
+                            bgcolor: "#05058C",
+                            color: "white",
+                            px: 4,
+                            py: 1,
+                            borderRadius: "8px",
+                            fontSize: "16px",
+                            fontWeight: "500",
+                            "&:hover": {
+                                bgcolor: "#03034A",
+                            },
+                        }}
+                    >
+                        ตกลง
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            </>
+        
     )
 }
 

@@ -30,7 +30,7 @@ function PromotionHeader() {
     return (
         <Box
             sx={{
-                minHeight: "58px",
+                minHeight: "60px",
                 display: "flex",
                 alignItems: "center",
                 px: 3,
@@ -48,6 +48,24 @@ function PromotionHeader() {
         </Box>
     );
 }
+
+const truncateFilename = (filename: string, maxLength: number = 20): string => {
+    if (filename.length <= maxLength) {
+        return filename;
+    }
+    
+    const lastDotIndex = filename.lastIndexOf('.');
+    const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
+    const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
+    
+    const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
+    
+    if (maxNameLength <= 0) {
+        return "..." + extension;
+    }
+    
+    return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
+};
 
 function CoverInputGroup() {
     const {
@@ -70,6 +88,15 @@ function CoverInputGroup() {
     const handleRemoveFile = () => {
         setValue("coverImage", new File([], ""));
     };
+
+    const getPromotionErrors = (): FieldErrors<z.infer<typeof PromotionSchema>> | null => {
+        if (watch("category") === "PROMOTION") {
+            return errors as FieldErrors<z.infer<typeof PromotionSchema>>;
+        }
+        return null;
+    };
+
+    const promotionErrors = getPromotionErrors();
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -109,7 +136,7 @@ function CoverInputGroup() {
                                         fontSize: "20px",
                                         lineHeight: "20px",
                                     }}>
-                                        {coverImage.name}
+                                        {truncateFilename(coverImage.name)}
                                     </Typography>
                                     <IconButton
                                         onClick={handleRemoveFile}
@@ -134,7 +161,7 @@ function CoverInputGroup() {
 
                 <Divider sx={{ width: "100%" }} />
 
-                <FormControl error={!!errors.coverHyperLink} sx={{ width: "100%", pb: 3 }}>
+                <FormControl error={!!promotionErrors?.coverHyperLink} sx={{ width: "100%", pb: 3 }}>
                     <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
                         <Box sx={{ flex: 1 }}>
                             <Typography
@@ -161,8 +188,8 @@ function CoverInputGroup() {
                                             variant="outlined"
                                             size="small"
                                             fullWidth
-                                            error={!!errors.coverHyperLink}
-                                            helperText={errors.coverHyperLink?.message}
+                                            error={!!promotionErrors?.coverHyperLink}
+                                            helperText={promotionErrors?.coverHyperLink?.message}
                                         />
                                     )}
                                 />

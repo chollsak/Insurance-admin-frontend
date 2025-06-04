@@ -27,7 +27,7 @@ function BannerHeader() {
     return (
         <Box
             sx={{
-                minHeight: "58px",
+                minHeight: "60px",
                 display: "flex",
                 alignItems: "center",
                 px: 3,
@@ -45,6 +45,24 @@ function BannerHeader() {
         </Box>
     );
 }
+
+const truncateFilename = (filename: string, maxLength: number = 20): string => {
+    if (filename.length <= maxLength) {
+        return filename;
+    }
+    
+    const lastDotIndex = filename.lastIndexOf('.');
+    const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
+    const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
+    
+    const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
+    
+    if (maxNameLength <= 0) {
+        return "..." + extension;
+    }
+    
+    return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
+};
 
 function CoverInputGroup() {
     const {
@@ -67,6 +85,15 @@ function CoverInputGroup() {
     const handleRemoveFile = () => {
         setValue("coverImage", new File([], ""));
     };
+
+    const getBannerErrors = (): FieldErrors<z.infer<typeof BannerSchema>> | null => {
+        if (watch("category") === "BANNER") {
+            return errors as FieldErrors<z.infer<typeof BannerSchema>>;
+        }
+        return null;
+    };
+
+    const bannerErrors = getBannerErrors();
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -106,7 +133,7 @@ function CoverInputGroup() {
                                         fontSize: "20px",
                                         lineHeight: "20px",
                                     }}>
-                                        {coverImage.name}
+                                        {truncateFilename(coverImage.name)}
                                     </Typography>
                                     <IconButton
                                         onClick={handleRemoveFile}
@@ -131,7 +158,7 @@ function CoverInputGroup() {
 
                 <Divider sx={{ width: "100%" }} />
 
-                <FormControl error={!!errors.coverHyperLink} sx={{ width: "100%", pb: 3 }}>
+                <FormControl error={!!bannerErrors?.coverHyperLink} sx={{ width: "100%", pb: 3 }}>
                     <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
                         <Box sx={{ flex: 1 }}>
                             <Typography
@@ -158,8 +185,8 @@ function CoverInputGroup() {
                                             variant="outlined"
                                             size="small"
                                             fullWidth
-                                            error={!!errors.coverHyperLink}
-                                            helperText={errors.coverHyperLink?.message}
+                                            error={!!bannerErrors?.coverHyperLink}
+                                            helperText={bannerErrors?.coverHyperLink?.message}
                                         />
                                     )}
                                 />
@@ -364,7 +391,7 @@ export function ContentItemInputGroup({ index, length, onRemove }: IContentItemI
 
                             {(contentImage?.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={1} >
-                                    <Typography sx={{ textDecoration: "underline", fontSize: "20px", lineHeight: "20px", }}>{contentImage.name}</Typography>
+                                    <Typography sx={{ textDecoration: "underline", fontSize: "20px", lineHeight: "20px", }}>{truncateFilename(contentImage.name)}</Typography>
                                     <IconButton
                                         size="small"
                                         onClick={handleRemoveFile}
