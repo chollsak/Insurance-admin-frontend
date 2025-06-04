@@ -3,8 +3,14 @@ import { Controller, useFieldArray, useFormContext, type FieldErrors } from "rea
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
-import { z } from "zod";
-import type { BannerSchema, ContentFormValues } from "../../../models";
+import type { BannerFormValues, ContentCategory, ContentFormValues } from "../../../models";
+
+const getBannerErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<BannerFormValues> | null => {
+    if (category === "BANNER") {
+        return errors as FieldErrors<BannerFormValues>;
+    }
+    return null;
+};
 
 export function BannerInputGroup({ sx }: { sx?: SxProps<Theme> }) {
     return (
@@ -50,17 +56,17 @@ const truncateFilename = (filename: string, maxLength: number = 20): string => {
     if (filename.length <= maxLength) {
         return filename;
     }
-    
+
     const lastDotIndex = filename.lastIndexOf('.');
     const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
     const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
-    
+
     const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
-    
+
     if (maxNameLength <= 0) {
         return "..." + extension;
     }
-    
+
     return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
 };
 
@@ -86,14 +92,9 @@ function CoverInputGroup() {
         setValue("coverImage", new File([], ""));
     };
 
-    const getBannerErrors = (): FieldErrors<z.infer<typeof BannerSchema>> | null => {
-        if (watch("category") === "BANNER") {
-            return errors as FieldErrors<z.infer<typeof BannerSchema>>;
-        }
-        return null;
-    };
 
-    const bannerErrors = getBannerErrors();
+
+    const bannerErrors = getBannerErrors(watch("category"), errors);
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -319,9 +320,9 @@ export function ContentItemInputGroup({ index, length, onRemove }: IContentItemI
         setValue(`contents.${index}.contentImage`, new File([], ""));
     };
 
-    const getBannerErrors = (): FieldErrors<z.infer<typeof BannerSchema>> | null => {
+    const getBannerErrors = (): FieldErrors<BannerFormValues> | null => {
         if (watch("category") === "BANNER") {
-            return errors as FieldErrors<z.infer<typeof BannerSchema>>;
+            return errors as FieldErrors<BannerFormValues>;
         }
         return null;
     };

@@ -7,6 +7,7 @@ import type {
     BannerFormValues,
     BannerModel,
     ContentFormValues,
+    InsuranceFormValues,
     InsuranceModel,
     PromotionFormValues,
     PromotionModel,
@@ -99,5 +100,20 @@ async function mapContentResponseToDefaultFormValues(
         };
 
         return defaultPromotion;
+    } else if (content.category === "INSURANCE") {
+        const defaultInsurance: InsuranceFormValues = {
+            category: "INSURANCE",
+            title: title,
+            status: status,
+            effectiveDate: effectiveDate,
+            coverImage: new File([], ""),
+            iconImage: new File([], ""),
+            titleTh: content.titleTh,
+            titleEn: content.titleEn,
+            descriptionTh: content.descriptionTh,
+            descriptionEn: content.descriptionEn,
+        };
+
+        return defaultInsurance;
     }
 }

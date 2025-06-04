@@ -2,12 +2,18 @@ import { Controller, useFormContext, type FieldErrors } from "react-hook-form";
 import { Box, Button, Divider, FormControl, FormHelperText, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
-import { z } from "zod";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import type { ContentFormValues, PromotionSchema } from "../../../models";
+import type { ContentCategory, ContentFormValues, PromotionFormValues } from "../../../models";
 import { CalendarIcon } from "../../common";
+
+const getPromotionErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<PromotionFormValues> | null => {
+    if (category === "PROMOTION") {
+        return errors as FieldErrors<PromotionFormValues>;
+    }
+    return null;
+};
 
 export function PromotionInputGroup({ sx }: { sx?: SxProps<Theme> }) {
     return (
@@ -53,17 +59,17 @@ const truncateFilename = (filename: string, maxLength: number = 20): string => {
     if (filename.length <= maxLength) {
         return filename;
     }
-    
+
     const lastDotIndex = filename.lastIndexOf('.');
     const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
     const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
-    
+
     const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
-    
+
     if (maxNameLength <= 0) {
         return "..." + extension;
     }
-    
+
     return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
 };
 
@@ -89,14 +95,7 @@ function CoverInputGroup() {
         setValue("coverImage", new File([], ""));
     };
 
-    const getPromotionErrors = (): FieldErrors<z.infer<typeof PromotionSchema>> | null => {
-        if (watch("category") === "PROMOTION") {
-            return errors as FieldErrors<z.infer<typeof PromotionSchema>>;
-        }
-        return null;
-    };
-
-    const promotionErrors = getPromotionErrors();
+    const promotionErrors = getPromotionErrors(watch("category"), errors);
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -222,9 +221,9 @@ function ContentInputGroup() {
         watch
     } = useFormContext<ContentFormValues>();
 
-    const getPromotionErrors = (): FieldErrors<z.infer<typeof PromotionSchema>> | null => {
+    const getPromotionErrors = (): FieldErrors<PromotionFormValues> | null => {
         if (watch("category") === "PROMOTION") {
-            return errors as FieldErrors<z.infer<typeof PromotionSchema>>;
+            return errors as FieldErrors<PromotionFormValues>;
         }
         return null;
     };

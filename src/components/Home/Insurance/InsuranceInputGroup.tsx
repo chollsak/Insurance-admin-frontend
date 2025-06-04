@@ -1,13 +1,15 @@
-import { Box, Button, Divider, FormControl, FormHelperText, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
+import { Box, Button, Divider, FormControl, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useFormContext, type FieldErrors } from "react-hook-form";
-import type { ContentFormValues, InsuranceSchema } from "../../../models";
-import { z } from "zod";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { CalendarIcon } from "../../common/Icons";
+import type { ContentCategory, ContentFormValues, InsuranceFormValues } from "../../../models";
+
+const getInsuranceErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<InsuranceFormValues> | null => {
+    if (category === "INSURANCE") {
+        return errors as FieldErrors<InsuranceFormValues>;
+    }
+    return null;
+};
 
 const truncateFilename = (filename: string, maxLength: number = 20): string => {
     if (filename.length <= maxLength) {
@@ -78,9 +80,6 @@ function CoverInputGroup() {
     const coverImage = watch("coverImage");
     const iconImage = watch("iconImage");
 
-    console.log("cover image", coverImage.name);
-    console.log("icon image", iconImage.name);
-
     const handleCoverFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
@@ -107,14 +106,9 @@ function CoverInputGroup() {
         trigger("iconImage");
     };
 
-    const getInsuranceErrors = (): FieldErrors<z.infer<typeof InsuranceSchema>> | null => {
-        if (watch("category") === "INSURANCE") {
-            return errors as FieldErrors<z.infer<typeof InsuranceSchema>>;
-        }
-        return null;
-    };
 
-    const insuranceErrors = getInsuranceErrors();
+
+    const insuranceErrors = getInsuranceErrors(watch("category"), errors);
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -269,14 +263,7 @@ function ContentInputGroup() {
         watch
     } = useFormContext<ContentFormValues>();
 
-    const getInsuranceErrors = (): FieldErrors<z.infer<typeof InsuranceSchema>> | null => {
-        if (watch("category") === "INSURANCE") {
-            return errors as FieldErrors<z.infer<typeof InsuranceSchema>>;
-        }
-        return null;
-    };
-
-    const insuranceErrors = getInsuranceErrors();
+    const insuranceErrors = getInsuranceErrors(watch("category"), errors);
 
     return (
         <Stack height="100%">
@@ -357,37 +344,6 @@ function ContentInputGroup() {
                             />
                         )}
                     />
-                </FormControl>
-
-                <FormControl error={!!insuranceErrors?.startEndDate} sx={{ maxWidth: "341px", width: "100%", }}>
-                    <Typography component="label" htmlFor="startEndDate" sx={{ fontSize: "22px", width: "fit-content", mb: 1 }}>
-                        Start - End Date <span style={{ color: "#FF0000" }}>*</span>
-                    </Typography>
-                    <Controller
-                        name="startEndDate"
-                        control={control}
-                        render={({ field }) => (
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateRangePicker
-                                    calendars={1}
-                                    value={field.value ?? [null, null]}
-                                    onChange={field.onChange}
-                                    slots={{ openPickerIcon: CalendarIcon }}
-                                    slotProps={{
-                                        textField: {
-                                            size: "small",
-                                            sx: { width: "100%" },
-                                            error: !!insuranceErrors?.startEndDate,
-                                        },
-                                        openPickerButton: {
-                                            sx: { color: "#B3B3B3" }
-                                        }
-                                    }}
-                                />
-                            </LocalizationProvider>
-                        )}
-                    />
-                    <FormHelperText>{insuranceErrors?.startEndDate?.message}</FormHelperText>
                 </FormControl>
             </Stack>
         </Stack>
