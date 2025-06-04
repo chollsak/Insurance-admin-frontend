@@ -12,11 +12,11 @@ import { Controller, useFormContext } from "react-hook-form";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
-import { contentCategoryTranslations } from "../../../common";
 import { ContentCategoryEnum, ContentStatusEnum, defaultBanner, defaultPromotion, type ContentFormValues } from "../../../models";
 import { CalendarIcon } from "../../common";
+import { contentCategoryTranslations } from "../../../common";
 
-export function BaseContentInputGroup() {
+export function BaseContentInputGroup({ isEditMode }: { isEditMode: boolean }) {
     const { control, reset, formState: { errors } } = useFormContext<ContentFormValues>();
 
     return (
@@ -38,6 +38,7 @@ export function BaseContentInputGroup() {
                     render={({ field }) => (
                         <Select
                             {...field}
+                            disabled={isEditMode}
                             onChange={(event) => {
                                 const newCategory = event.target.value as ContentFormValues["category"];
                                 field.onChange(newCategory);

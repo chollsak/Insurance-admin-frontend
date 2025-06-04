@@ -2,12 +2,13 @@ import type { ApiResponse } from "../common";
 import type { ContentCommonModel } from "../Content/ContentCommonModel";
 
 export interface PromotionModel extends ContentCommonModel {
+    category: "PROMOTION";
     titleTh: string;
     titleEn: string;
     descriptionTh: string;
     descriptionEn: string;
     coverImagePath: string;
-    stateDate: string;
+    startDate: string;
     endDate: string;
     createdAt: string;
     updatedAt: string;

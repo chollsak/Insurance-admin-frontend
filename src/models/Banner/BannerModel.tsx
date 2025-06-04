@@ -3,9 +3,10 @@ import type { ContentCommonModel } from "../Content/ContentCommonModel";
 import type { BannerContentModel } from "./BannerContentModel";
 
 export interface BannerModel extends ContentCommonModel {
+    category: "BANNER";
     coverImagePath: string;
     coverHyperLink: string;
-    content: BannerContentModel[];
+    contents: BannerContentModel[];
 }
 
 export interface BannerCreateRequest {

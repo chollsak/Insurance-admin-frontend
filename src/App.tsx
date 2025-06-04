@@ -1,11 +1,11 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import theme from './theme';
-import { ContentCreateScreen, HomeScreen, } from './screens';
-import { AppLayout } from './components';
-import { CommonProvider } from './contexts';
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import theme from "./theme";
+import { ContentCreateScreen, EditScreen, CreateScreen, HomeScreen, } from "./screens";
+import { AppLayout } from "./components";
+import { CommonProvider } from "./contexts";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,11 +18,12 @@ const queryClient = new QueryClient({
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <AppLayout />,
     children: [
       { index: true, element: <HomeScreen /> },
-      { path: 'content/new', element: <ContentCreateScreen /> },
+      { path: "content/new", element: <CreateScreen /> },
+      { path: "content/edit/:id", element: <EditScreen /> }
     ],
   },
 ]);

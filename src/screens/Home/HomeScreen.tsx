@@ -37,7 +37,7 @@ export default function HomeScreen() {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
-  const { mutate: deleteContent } = useDeleteContent();
+  const { mutateAsync: deleteContent } = useDeleteContent();
   const { data: response, isLoading } = useContentsQuery(selectedCategory, currentPage, rowsPerPage);
   const contentData = response?.data;
   const [newsItems, setNewsItems] = useState<ContentModel[]>([]);
@@ -177,10 +177,10 @@ export default function HomeScreen() {
     setDeleteDialog({ open: true, item });
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (deleteDialog.item) {
-      deleteContent(deleteDialog.item);
-      setDeleteDialog({ open: false, item: null });
+      await deleteContent(deleteDialog.item);
+      handleCloseDialog();
     }
   };
 

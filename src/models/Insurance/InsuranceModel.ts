@@ -1,6 +1,8 @@
+import type { ApiResponse } from "../common";
 import type { ContentCommonModel } from "../Content/ContentCommonModel";
 
 export interface InsuranceModel extends ContentCommonModel {
+    category: "INSURANCE";
     titleTh: string;
     titleEn: string;
     descriptionTh: string;
@@ -11,3 +13,5 @@ export interface InsuranceModel extends ContentCommonModel {
     updatedAt: string;
     deletedAt: string | null;
 }
+
+export type InsuranceResponse = ApiResponse<InsuranceModel>;

@@ -76,3 +76,11 @@ export const useDeleteContent = () => {
         }
     })
 }
+
+export const useContentQueryById = (id: string) => {
+    return useQuery({
+        queryKey: ["content", id],
+        queryFn: () => contentService.getContentById(id),
+        enabled: !!id,
+    });
+};

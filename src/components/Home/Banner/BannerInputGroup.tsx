@@ -2,19 +2,19 @@ import { Box, Button, Divider, FormControl, IconButton, Stack, TextField, Typogr
 import { Controller, useFieldArray, useFormContext, type FieldErrors } from "react-hook-form";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import { z } from "zod";
 import type { BannerSchema, ContentFormValues } from "../../../models";
 
 export function BannerInputGroup({ sx }: { sx?: SxProps<Theme> }) {
     return (
-        <Box sx={{ ...sx, display: 'flex', flexDirection: 'column', }}>
+        <Box sx={{ ...sx, display: "flex", flexDirection: "column" }}>
             <BannerHeader />
             <Box sx={{
                 flex: 1,
-                overflowY: 'auto',
-                display: 'flex',
-                flexDirection: 'column',
+                overflowY: "auto",
+                display: "flex",
+                flexDirection: "column",
             }}>
                 <CoverInputGroup />
                 <ContentInputGroup />

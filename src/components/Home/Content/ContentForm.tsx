@@ -1,88 +1,96 @@
-import { Link, useOutletContext } from "react-router-dom";
-import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
-import { Box, Button, Typography, type SxProps, type Theme } from "@mui/material";
+import { FormProvider, useForm } from "react-hook-form";
+import { ContentFormSchema, type ContentFormValues } from "../../../models";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BannerInputGroup, BaseContentInputGroup, PromotionInputGroup } from "../../components";
-import { ContentFormSchema, defaultBanner, type ContentFormValues } from "../../models";
-import { useCreateContent } from "../../hooks";
+import { useEffect } from "react";
+import { Box, Button, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import { useCreateContent } from "../../../hooks";
+import { BaseContentInputGroup } from "./BaseContentInputGroup";
+import { BannerInputGroup } from "../Banner";
+import { PromotionInputGroup } from "../Promotion";
 
-export default function ContentCreateScreen() {
-    const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
+interface IContentFromProps {
+    mode: "create" | "edit";
+    defaultValues?: Partial<ContentFormValues>;
+    contentId?: string;
+}
+
+export function ContentForm({ mode, defaultValues }: IContentFromProps) {
     const methods = useForm<ContentFormValues>({
         resolver: zodResolver(ContentFormSchema),
-        defaultValues: defaultBanner,
+        defaultValues: defaultValues,
     });
-    const { handleSubmit, formState: { isSubmitting }, watch } = methods;
-    const { mutate: createContent } = useCreateContent();
+    const { handleSubmit, watch, reset, formState: { isSubmitting } } = methods;
 
-    const onSubmit: SubmitHandler<ContentFormValues> = (data) => {
-        console.log("Form submitted:", data);
-        createContent(data, {
-            onSuccess: (response) => {
-                console.log("Content created successfully");
-                console.log("response", response);
-            },
-            onError: (error) => {
-                console.error("Error creating content:", error);
-            }
-        });
+    const { mutate: createContent } = useCreateContent();
+    const category = watch("category");
+
+    useEffect(() => {
+        reset(defaultValues);
+    }, [defaultValues, reset]);
+
+    const onSubmit = (data: ContentFormValues) => {
+        if (mode === "create") {
+            console.log("data", data);
+            createContent(data);
+        } else {
+            const changedValues = Object.fromEntries(
+                Object.entries(data).filter(([key, val]) => val !== defaultValues?.[key as keyof ContentFormValues])
+            );
+            console.log("changed values", changedValues);
+        }
     };
 
     return (
         <FormProvider {...methods}>
             <Box sx={{
-                ...sx,
-                display: "flex",
-                bgcolor: "#F7FAFC",
-                overflowY: "hidden",
+                maxWidth: "1010px",
+                width: "100%",
             }}>
+                <ContentHeader />
                 <Box sx={{
-                    maxWidth: "1010px",
-                    width: "100%",
+                    display: "flex",
                 }}>
-                    <ContentHeader />
+                    <BaseContentInputGroup isEditMode={mode === "edit"} />
                     <Box sx={{
                         display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        maxWidth: "578px",
+                        flex: 3,
                     }}>
-                        <BaseContentInputGroup isEditMode={false} />
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            maxWidth: "578px",
-                            flex: 3,
-                        }}>
-                            <DisplayPreviewBanner />
-                            <Button
-                                disabled={isSubmitting}
-                                type="button"
-                                variant="contained"
-                                onClick={handleSubmit(onSubmit)}
-                                sx={{ fontSize: "22px", letterSpacing: "1px", lineHeight: "100%", maxWidth: "145px", width: "100%", }}>
-                                {isSubmitting ? "Saving..." : "Save"}
-                            </Button>
-                        </Box>
+                        <DisplayPreviewBanner />
+                        <Button
+                            disabled={isSubmitting}
+                            type="button"
+                            variant="contained"
+                            onClick={handleSubmit(onSubmit)}
+                            sx={{ fontSize: "22px", letterSpacing: "1px", lineHeight: "100%", maxWidth: "145px", width: "100%", }}>
+                            {mode === "create" ? (isSubmitting ? "Saving..." : "Save") : (isSubmitting ? "Editing..." : "Edit")}
+                        </Button>
                     </Box>
                 </Box>
-                {watch("category") === "BANNER" && (
-                    <BannerInputGroup sx={{
-                        maxWidth: "430px",
-                        width: "100%",
-                        height: "100%",
-                        bgcolor: "#FFFFFF",
-                    }} />
-                )}
-                {watch("category") === "PROMOTION" && (
-                    <PromotionInputGroup sx={{
-                        maxWidth: "430px",
-                        width: "100%",
-                        height: "100%",
-                        bgcolor: "#FFFFFF",
-                    }} />
-                )}
             </Box>
+            {category === "BANNER" && (
+                <BannerInputGroup sx={{
+                    maxWidth: "430px",
+                    width: "100%",
+                    height: "100%",
+                    bgcolor: "#FFFFFF",
+                }} />
+            )}
+            {category === "PROMOTION" && (
+                <PromotionInputGroup sx={{
+                    maxWidth: "430px",
+                    width: "100%",
+                    height: "100%",
+                    bgcolor: "#FFFFFF",
+                }} />
+            )}
+
         </FormProvider>
     )
+
 }
 
 function ContentHeader() {
@@ -124,7 +132,6 @@ function ContentHeader() {
                         display: "flex",
                         alignItems: "center",
                         color: "#4285F4",
-
                         gap: "4px",
                     }}>
                     <Box
