@@ -39,24 +39,24 @@ export const useCreateContent = () => {
             } else if (data.category === "PROMOTION") {
                 formData.append("coverImage", data.coverImage);
                 formData.append("coverHyperLink", data.coverHyperLink);
-                formData.append('titleTh', data.titleTh);
-                formData.append('titleEn', data.titleEn);
-                formData.append('descriptionTh', data.descriptionTh);
-                formData.append('descriptionEn', data.descriptionEn);
-                formData.append('startDate', data.startEndDate[0]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
-                formData.append('endDate', data.startEndDate[1]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
+                formData.append("titleTh", data.titleTh);
+                formData.append("titleEn", data.titleEn);
+                formData.append("descriptionTh", data.descriptionTh);
+                formData.append("descriptionEn", data.descriptionEn);
+                formData.append("startDate", data.startEndDate[0]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
+                formData.append("endDate", data.startEndDate[1]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
                 return promotionService.createPromotion(formData);
 
-            }else if (data.category === "INSURANCE") {
-                
+            } else if (data.category === "INSURANCE") {
+
                 formData.append("coverImage", data.coverImage);
                 formData.append("iconImage", data.iconImage);
-                formData.append('titleTh', data.titleTh);
-                formData.append('titleEn', data.titleEn);
-                formData.append('descriptionTh', data.descriptionTh);
-                formData.append('descriptionEn', data.descriptionEn);
-                formData.append('startDate', data.startEndDate[0]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
-                formData.append('endDate', data.startEndDate[1]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
+                formData.append("titleTh", data.titleTh);
+                formData.append("titleEn", data.titleEn);
+                formData.append("descriptionTh", data.descriptionTh);
+                formData.append("descriptionEn", data.descriptionEn);
+                formData.append("startDate", data.startEndDate[0]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
+                formData.append("endDate", data.startEndDate[1]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
 
                 return insuranceService.createInsurance(formData);
             }

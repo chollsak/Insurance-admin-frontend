@@ -13,17 +13,17 @@ const truncateFilename = (filename: string, maxLength: number = 20): string => {
     if (filename.length <= maxLength) {
         return filename;
     }
-    
+
     const lastDotIndex = filename.lastIndexOf('.');
     const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
     const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
-    
+
     const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
-    
+
     if (maxNameLength <= 0) {
         return "..." + extension;
     }
-    
+
     return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
 };
 
@@ -69,16 +69,17 @@ function InsuranceHeader() {
 
 function CoverInputGroup() {
     const {
-        control,
         formState: { errors },
         setValue,
         trigger,
         watch,
     } = useFormContext<ContentFormValues>();
-    
-    const coverImage = watch("coverImage");
 
-    const iconImage = watch("iconImage" as any);
+    const coverImage = watch("coverImage");
+    const iconImage = watch("iconImage");
+
+    console.log("cover image", coverImage.name);
+    console.log("icon image", iconImage.name);
 
     const handleCoverFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -96,15 +97,24 @@ function CoverInputGroup() {
     const handleIconFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
-            setValue("iconImage" as any, file);
-            trigger("iconImage" as any);
+            setValue("iconImage", file);
+            trigger("iconImage");
         }
     };
 
     const handleIconRemoveFile = () => {
-        setValue("iconImage" as any, new File([], ""));
-        trigger("iconImage" as any);
+        setValue("iconImage", new File([], ""));
+        trigger("iconImage");
     };
+
+    const getInsuranceErrors = (): FieldErrors<z.infer<typeof InsuranceSchema>> | null => {
+        if (watch("category") === "INSURANCE") {
+            return errors as FieldErrors<z.infer<typeof InsuranceSchema>>;
+        }
+        return null;
+    };
+
+    const insuranceErrors = getInsuranceErrors();
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -127,15 +137,15 @@ function CoverInputGroup() {
                             <Button
                                 component="label"
                                 variant="outlined"
-                                sx={{ 
-                                    borderRadius: "8px", 
-                                    py: 1, 
-                                    maxWidth: "100px", 
-                                    width: "100%", 
-                                    fontSize: "20px", 
-                                    lineHeight: "20px", 
-                                    borderColor: `${!!errors.coverImage ? "#d32f2f" : "inherit"}`, 
-                                    color: `${!!errors.coverImage ? "#d32f2f" : "inherit"}` 
+                                sx={{
+                                    borderRadius: "8px",
+                                    py: 1,
+                                    maxWidth: "100px",
+                                    width: "100%",
+                                    fontSize: "20px",
+                                    lineHeight: "20px",
+                                    borderColor: `${!!errors.coverImage ? "#d32f2f" : "inherit"}`,
+                                    color: `${!!errors.coverImage ? "#d32f2f" : "inherit"}`
                                 }}>
                                 เลือกไฟล์
                                 <input
@@ -196,15 +206,15 @@ function CoverInputGroup() {
                             <Button
                                 component="label"
                                 variant="outlined"
-                                sx={{ 
-                                    borderRadius: "8px", 
-                                    py: 1, 
-                                    maxWidth: "100px", 
-                                    width: "100%", 
-                                    fontSize: "20px", 
-                                    lineHeight: "20px", 
-                                    borderColor: `${!!(errors as any).iconImage ? "#d32f2f" : "inherit"}`, 
-                                    color: `${!!(errors as any).iconImage ? "#d32f2f" : "inherit"}` 
+                                sx={{
+                                    borderRadius: "8px",
+                                    py: 1,
+                                    maxWidth: "100px",
+                                    width: "100%",
+                                    fontSize: "20px",
+                                    lineHeight: "20px",
+                                    borderColor: `${!!insuranceErrors?.iconImage ? "#d32f2f" : "inherit"}`,
+                                    color: `${!!insuranceErrors?.iconImage ? "#d32f2f" : "inherit"}`
                                 }}>
                                 เลือกไฟล์
                                 <input
@@ -234,9 +244,9 @@ function CoverInputGroup() {
                             )}
                         </Box>
 
-                        {(errors as any).iconImage && (
+                        {insuranceErrors?.iconImage && (
                             <Typography color="error" fontSize="12px" px={2}>
-                                {(errors as any).iconImage.message}
+                                {insuranceErrors?.iconImage?.message}
                             </Typography>
                         )}
                     </Box>

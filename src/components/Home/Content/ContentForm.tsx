@@ -1,13 +1,14 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { ContentFormSchema, type ContentFormValues } from "../../../models";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useCreateContent } from "../../../hooks";
 import { BaseContentInputGroup } from "./BaseContentInputGroup";
 import { BannerInputGroup } from "../Banner";
 import { PromotionInputGroup } from "../Promotion";
+import { InsuranceInputGroup } from "../Insurance";
 
 interface IContentFromProps {
     mode: "create" | "edit";
@@ -22,17 +23,24 @@ export function ContentForm({ mode, defaultValues }: IContentFromProps) {
     });
     const { handleSubmit, watch, reset, formState: { isSubmitting } } = methods;
 
-    const { mutate: createContent } = useCreateContent();
     const category = watch("category");
+
+    const { mutateAsync: createContent } = useCreateContent();
+
+    const [isShowSuccesModal, setIsShowSuccessModal] = useState<boolean>(false);
+    function handleToggleSuccessModal() {
+        setIsShowSuccessModal(prev => !prev);
+    }
 
     useEffect(() => {
         reset(defaultValues);
     }, [defaultValues, reset]);
 
-    const onSubmit = (data: ContentFormValues) => {
+    const onSubmit = async (data: ContentFormValues) => {
         if (mode === "create") {
             console.log("data", data);
-            createContent(data);
+            await createContent(data);
+            handleToggleSuccessModal();
         } else {
             const changedValues = Object.fromEntries(
                 Object.entries(data).filter(([key, val]) => val !== defaultValues?.[key as keyof ContentFormValues])
@@ -42,53 +50,134 @@ export function ContentForm({ mode, defaultValues }: IContentFromProps) {
     };
 
     return (
-        <FormProvider {...methods}>
-            <Box sx={{
-                maxWidth: "1010px",
-                width: "100%",
-            }}>
-                <ContentHeader />
+        <>
+            <FormProvider {...methods}>
                 <Box sx={{
-                    display: "flex",
+                    maxWidth: "1010px",
+                    width: "100%",
                 }}>
-                    <BaseContentInputGroup isEditMode={mode === "edit"} />
+                    <ContentHeader />
                     <Box sx={{
                         display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        maxWidth: "578px",
-                        flex: 3,
                     }}>
-                        <DisplayPreviewBanner />
-                        <Button
-                            disabled={isSubmitting}
-                            type="button"
-                            variant="contained"
-                            onClick={handleSubmit(onSubmit)}
-                            sx={{ fontSize: "22px", letterSpacing: "1px", lineHeight: "100%", maxWidth: "145px", width: "100%", }}>
-                            {mode === "create" ? (isSubmitting ? "Saving..." : "Save") : (isSubmitting ? "Editing..." : "Edit")}
-                        </Button>
+                        <BaseContentInputGroup isEditMode={mode === "edit"} />
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            maxWidth: "578px",
+                            flex: 3,
+                        }}>
+                            <DisplayPreviewBanner />
+                            <Button
+                                disabled={isSubmitting}
+                                type="button"
+                                variant="contained"
+                                onClick={handleSubmit(onSubmit)}
+                                sx={{ fontSize: "22px", letterSpacing: "1px", lineHeight: "100%", maxWidth: "145px", width: "100%", }}>
+                                {mode === "create" ? (isSubmitting ? "Saving..." : "Save") : (isSubmitting ? "Editing..." : "Edit")}
+                            </Button>
+                        </Box>
                     </Box>
                 </Box>
-            </Box>
-            {category === "BANNER" && (
-                <BannerInputGroup sx={{
-                    maxWidth: "430px",
-                    width: "100%",
-                    height: "100%",
-                    bgcolor: "#FFFFFF",
-                }} />
-            )}
-            {category === "PROMOTION" && (
-                <PromotionInputGroup sx={{
-                    maxWidth: "430px",
-                    width: "100%",
-                    height: "100%",
-                    bgcolor: "#FFFFFF",
-                }} />
-            )}
+                {category === "BANNER" && (
+                    <BannerInputGroup sx={{
+                        maxWidth: "430px",
+                        width: "100%",
+                        height: "100%",
+                        bgcolor: "#FFFFFF",
+                    }} />
+                )}
+                {category === "PROMOTION" && (
+                    <PromotionInputGroup sx={{
+                        maxWidth: "430px",
+                        width: "100%",
+                        height: "100%",
+                        bgcolor: "#FFFFFF",
+                    }} />
+                )}
+                {category === "INSURANCE" && (
+                    <InsuranceInputGroup sx={{
+                        maxWidth: "430px",
+                        width: "100%",
+                        height: "100%",
+                        bgcolor: "#FFFFFF",
+                    }} />
+                )}
 
-        </FormProvider>
+            </FormProvider>
+            <Dialog
+                open={isShowSuccesModal}
+                onClose={handleToggleSuccessModal}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        borderRadius: "12px",
+                        padding: 2,
+                    }
+                }}>
+                <DialogContent sx={{ textAlign: "center", py: 4 }}>
+                    <Box sx={{ mb: 2 }}>
+                        <Box
+                            sx={{
+                                width: 60,
+                                height: 60,
+                                borderRadius: "50%",
+                                bgcolor: "#4CAF50",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                margin: "0 auto",
+                                mb: 2,
+                            }}>
+                            <Typography sx={{ color: "white", fontSize: "24px", fontWeight: "bold" }}>
+                                ✓
+                            </Typography>
+                        </Box>
+                    </Box>
+
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            color: "#05058C",
+                            fontWeight: "bold",
+                            mb: 1,
+                        }}>
+                        สร้างสำเร็จ!
+                    </Typography>
+
+                    <Typography
+                        sx={{
+                            color: "#666",
+                            fontSize: "16px",
+                            mb: 3,
+                        }}>
+                        เนื้อหาได้ถูกสร้างเรียบร้อยแล้ว
+                    </Typography>
+                </DialogContent>
+
+                <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
+                    <Button
+                        onClick={handleToggleSuccessModal}
+                        variant="contained"
+                        sx={{
+                            bgcolor: "#05058C",
+                            color: "white",
+                            px: 4,
+                            py: 1,
+                            borderRadius: "8px",
+                            fontSize: "16px",
+                            fontWeight: "500",
+                            "&:hover": {
+                                bgcolor: "#03034A",
+                            },
+                        }}>
+                        ตกลง
+                    </Button>
+                </DialogActions>
+            </Dialog >
+        </>
     )
 
 }

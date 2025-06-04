@@ -72,7 +72,7 @@ async function mapContentResponseToDefaultFormValues(
             contents: await Promise.all(
                 content.contents.map(async (bc) => ({
                     contentImage: await imageUrlToFile(getImageUrl(bc.contentImagePath)!, bc.contentImagePath),
-                    contentHyperLink: bc.contentImagePath
+                    contentHyperLink: bc.contentHyperLink,
                 }))
             ),
         };

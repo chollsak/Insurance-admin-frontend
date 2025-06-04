@@ -7,11 +7,9 @@ import { ContentFormSchema, defaultBanner, type ContentFormValues } from "../../
 import { useCreateContent } from "../../hooks";
 import { InsuranceInputGroup } from "../../components/Home/Insurance/InsuranceInputGroup";
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
 
 export default function ContentCreateScreen() {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
-    const navigate = useNavigate();
     const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
     const methods = useForm<ContentFormValues>({
         resolver: zodResolver(ContentFormSchema),
@@ -35,7 +33,7 @@ export default function ContentCreateScreen() {
             }
         });
 
-    
+
     };
 
     const handleModalClose = () => {
@@ -48,68 +46,68 @@ export default function ContentCreateScreen() {
 
     return (
         <>
-        <FormProvider {...methods}>
-            <Box sx={{
-                ...sx,
-                display: "flex",
-                bgcolor: "#F7FAFC",
-                overflowY: "hidden",
-            }}>
+            <FormProvider {...methods}>
                 <Box sx={{
-                    maxWidth: "1010px",
-                    width: "100%",
+                    ...sx,
+                    display: "flex",
+                    bgcolor: "#F7FAFC",
+                    overflowY: "hidden",
                 }}>
-                    <ContentHeader />
                     <Box sx={{
-                        display: "flex",
+                        maxWidth: "1010px",
+                        width: "100%",
                     }}>
-                        <BaseContentInputGroup isEditMode={false} />
+                        <ContentHeader />
                         <Box sx={{
                             display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            maxWidth: "578px",
-                            flex: 3,
                         }}>
-                            <DisplayPreviewBanner />
-                            <Button
-                                disabled={isSubmitting}
-                                type="button"
-                                variant="contained"
-                                onClick={handleSubmit(onSubmit)}
-                                sx={{ fontSize: "22px", letterSpacing: "1px", lineHeight: "100%", maxWidth: "145px", width: "100%", }}>
-                                {isSubmitting ? "Saving..." : "Save"}
-                            </Button>
+                            <BaseContentInputGroup isEditMode={false} />
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                maxWidth: "578px",
+                                flex: 3,
+                            }}>
+                                <DisplayPreviewBanner />
+                                <Button
+                                    disabled={isSubmitting}
+                                    type="button"
+                                    variant="contained"
+                                    onClick={handleSubmit(onSubmit)}
+                                    sx={{ fontSize: "22px", letterSpacing: "1px", lineHeight: "100%", maxWidth: "145px", width: "100%", }}>
+                                    {isSubmitting ? "Saving..." : "Save"}
+                                </Button>
+                            </Box>
                         </Box>
                     </Box>
+                    {watch("category") === "BANNER" && (
+                        <BannerInputGroup sx={{
+                            maxWidth: "430px",
+                            width: "100%",
+                            height: "100%",
+                            bgcolor: "#FFFFFF",
+                        }} />
+                    )}
+                    {watch("category") === "PROMOTION" && (
+                        <PromotionInputGroup sx={{
+                            maxWidth: "430px",
+                            width: "100%",
+                            height: "100%",
+                            bgcolor: "#FFFFFF",
+                        }} />
+                    )}
+                    {watch("category") === "INSURANCE" && (
+                        <InsuranceInputGroup sx={{
+                            maxWidth: "430px",
+                            width: "100%",
+                            height: "100%",
+                            bgcolor: "#FFFFFF",
+                        }} />
+                    )}
                 </Box>
-                {watch("category") === "BANNER" && (
-                    <BannerInputGroup sx={{
-                        maxWidth: "430px",
-                        width: "100%",
-                        height: "100%",
-                        bgcolor: "#FFFFFF",
-                    }} />
-                )}
-                {watch("category") === "PROMOTION" && (
-                    <PromotionInputGroup sx={{
-                        maxWidth: "430px",
-                        width: "100%",
-                        height: "100%",
-                        bgcolor: "#FFFFFF",
-                    }} />
-                )}
-                {watch("category") === "INSURANCE" && (
-                    <InsuranceInputGroup sx={{
-                        maxWidth: "430px",
-                        width: "100%",
-                        height: "100%",
-                        bgcolor: "#FFFFFF",
-                    }} />
-                )}
-            </Box>
-        </FormProvider>
-        <Dialog
+            </FormProvider>
+            <Dialog
                 open={showSuccessModal}
                 onClose={handleModalClose}
                 maxWidth="sm"
@@ -142,7 +140,7 @@ export default function ContentCreateScreen() {
                             </Typography>
                         </Box>
                     </Box>
-                    
+
                     <Typography
                         variant="h5"
                         sx={{
@@ -153,7 +151,7 @@ export default function ContentCreateScreen() {
                     >
                         สร้างสำเร็จ!
                     </Typography>
-                    
+
                     <Typography
                         sx={{
                             color: "#666",
@@ -164,7 +162,7 @@ export default function ContentCreateScreen() {
                         เนื้อหาได้ถูกสร้างเรียบร้อยแล้ว
                     </Typography>
                 </DialogContent>
-                
+
                 <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
                     <Button
                         onClick={handleModalConfirm}
@@ -186,8 +184,8 @@ export default function ContentCreateScreen() {
                     </Button>
                 </DialogActions>
             </Dialog>
-            </>
-        
+        </>
+
     )
 }
 

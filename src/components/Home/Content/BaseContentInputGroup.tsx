@@ -12,7 +12,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
-import { ContentCategoryEnum, ContentStatusEnum, defaultBanner, defaultPromotion, type ContentFormValues } from "../../../models";
+import { ContentCategoryEnum, ContentStatusEnum, defaultBanner, defaultInsurance, defaultPromotion, type ContentFormValues } from "../../../models";
 import { CalendarIcon } from "../../common";
 import { contentCategoryTranslations } from "../../../common";
 
@@ -47,6 +47,8 @@ export function BaseContentInputGroup({ isEditMode }: { isEditMode: boolean }) {
                                     reset(defaultBanner);
                                 } else if (newCategory === "PROMOTION") {
                                     reset(defaultPromotion);
+                                } else if (newCategory === "INSURANCE") {
+                                    reset(defaultInsurance);
                                 }
                             }}
                             size="small"
