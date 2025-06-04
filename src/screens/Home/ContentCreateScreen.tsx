@@ -40,14 +40,10 @@ export default function ContentCreateScreen() {
 
     const handleModalClose = () => {
         setShowSuccessModal(false);
-        // Navigate to home page after closing modal
-        navigate('/');
     };
 
     const handleModalConfirm = () => {
         setShowSuccessModal(false);
-        // Navigate to home page immediately
-        navigate("/");
     };
 
     return (
