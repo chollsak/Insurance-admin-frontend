@@ -20,7 +20,7 @@ export default function AppLayout() {
     }
 
     return (
-        <Box sx={{ display: "flex", minHeight: "100vh", userSelect: "none" }}>
+        <Box sx={{ display: "flex", minHeight: "100vh", userSelect: "none", maxWidth: "1440px", mx: "auto" }}>
             <Box
                 sx={{
                     width: isSidebarOpen ? "255px" : "0px",
