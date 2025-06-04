@@ -1,11 +1,10 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "./theme";
-import { ContentCreateScreen, ContentEditScreen, HomeScreen, } from "./screens";
-import { AppLayout } from "./components";
 import { CommonProvider } from "./contexts";
+import { router } from "./router";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,19 +13,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <AppLayout />,
-    children: [
-      { index: true, element: <HomeScreen /> },
-      { path: "content/new", element: <ContentCreateScreen /> },
-      { path: "content/edit/:id", element: <ContentEditScreen /> }
-    ],
-  },
-]);
 
 function App() {
   return (
