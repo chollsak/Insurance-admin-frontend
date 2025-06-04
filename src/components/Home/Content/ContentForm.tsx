@@ -111,10 +111,12 @@ export function ContentForm({ mode, defaultValues }: IContentFromProps) {
                 onClose={handleToggleSuccessModal}
                 maxWidth="sm"
                 fullWidth
-                PaperProps={{
-                    sx: {
-                        borderRadius: "12px",
-                        padding: 2,
+                slotProps={{
+                    paper: {
+                        sx: {
+                            borderRadius: "12px",
+                            padding: 2,
+                        },
                     }
                 }}>
                 <DialogContent sx={{ textAlign: "center", py: 4 }}>

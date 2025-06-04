@@ -1,6 +1,8 @@
 import { useOutletContext, useParams } from "react-router-dom";
 import { Box, Container } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material";
+import type { Dayjs } from "dayjs";
+import { useQuery } from "@tanstack/react-query";
 import { useContentQueryById } from "../../hooks";
 import { ContentForm } from "../../components";
 import type {
@@ -14,10 +16,8 @@ import type {
     SuitInsuranceModel
 } from "../../models";
 import { getImageUrl, imageUrlToFile, parseIsoToDayjs } from "../../utils";
-import type { Dayjs } from "dayjs";
-import { useQuery } from "@tanstack/react-query";
 
-export default function EditScreen() {
+export default function ContentEditScreen() {
     const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
     const { id } = useParams<{ id: string }>();
     const { data: rawData, isLoading: isRawLoading } = useContentQueryById(id!);
@@ -106,8 +106,8 @@ async function mapContentResponseToDefaultFormValues(
             title: title,
             status: status,
             effectiveDate: effectiveDate,
-            coverImage: new File([], ""),
-            iconImage: new File([], ""),
+            coverImage: await imageUrlToFile(getImageUrl(content.coverImagePath)!, content.coverImagePath),
+            iconImage: await imageUrlToFile(getImageUrl(content.iconImagePath)!, content.iconImagePath),
             titleTh: content.titleTh,
             titleEn: content.titleEn,
             descriptionTh: content.descriptionTh,

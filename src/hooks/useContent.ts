@@ -34,6 +34,7 @@ export const useCreateContent = () => {
                     formData.append(`contents[${idx}].contentImage`, c.contentImage);
                     formData.append(`contents[${idx}].contentHyperLink`, c.contentHyperLink);
                 });
+
                 return bannerService.createBanner(formData);
 
             } else if (data.category === "PROMOTION") {
@@ -45,6 +46,7 @@ export const useCreateContent = () => {
                 formData.append("descriptionEn", data.descriptionEn);
                 formData.append("startDate", data.startEndDate[0]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
                 formData.append("endDate", data.startEndDate[1]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
+
                 return promotionService.createPromotion(formData);
 
             } else if (data.category === "INSURANCE") {
@@ -55,8 +57,6 @@ export const useCreateContent = () => {
                 formData.append("titleEn", data.titleEn);
                 formData.append("descriptionTh", data.descriptionTh);
                 formData.append("descriptionEn", data.descriptionEn);
-                formData.append("startDate", data.startEndDate[0]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
-                formData.append("endDate", data.startEndDate[1]?.format("YYYY-MM-DDTHH:mm:ss") ?? "");
 
                 return insuranceService.createInsurance(formData);
             }
