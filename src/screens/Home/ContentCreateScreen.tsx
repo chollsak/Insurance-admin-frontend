@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { BannerInputGroup, BaseContentInputGroup, PromotionInputGroup } from "../../components";
 import { ContentFormSchema, defaultBanner, type ContentFormValues } from "../../models";
 import { useCreateContent } from "../../hooks";
+import { InsuranceInputGroup } from "../../components/Home/Insurance/InsuranceInputGroup";
 
 export default function ContentCreateScreen() {
     const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
@@ -74,6 +75,14 @@ export default function ContentCreateScreen() {
                 )}
                 {watch("category") === "PROMOTION" && (
                     <PromotionInputGroup sx={{
+                        maxWidth: "430px",
+                        width: "100%",
+                        height: "100%",
+                        bgcolor: "#FFFFFF",
+                    }} />
+                )}
+                {watch("category") === "INSURANCE" && (
+                    <InsuranceInputGroup sx={{
                         maxWidth: "430px",
                         width: "100%",
                         height: "100%",

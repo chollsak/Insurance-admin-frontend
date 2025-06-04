@@ -70,9 +70,36 @@ export const PromotionSchema = BaseContentSchema.extend({
         })
 })
 
+export const InsuranceSchema = BaseContentSchema.extend({
+    category: z.literal("INSURANCE"),
+    coverImage: z
+        .instanceof(File)
+        .refine(file => file.size > 0, { message: "โปรดเลือกภาพปก" }),
+    coverHyperLink: z.string().url(),
+    titleTh: z.string().min(3, "titleTh must be at least 3 characters"),
+    titleEn: z.string().min(3, "titleEn must be at least 3 characters"),
+    descriptionTh: z.string().min(3, "descriptionTh must be at least 3 characters"),
+    descriptionEn: z.string().min(3, "descriptionEn must be at least 3 characters"),
+    startEndDate: z
+        .tuple([
+            z
+                .custom<Dayjs | null>((val) => val === null || (val && typeof val === 'object' && 'isValid' in val && val.isValid()), {
+                    message: 'Invalid start date',
+                }),
+            z
+                .custom<Dayjs | null>((val) => val === null || (val && typeof val === 'object' && 'isValid' in val && val.isValid()), {
+                    message: 'Invalid end date',
+                }),
+        ])
+        .refine(([from, to]) => from && to && (from.isBefore(to) || from.isSame(to, 'day')), {
+            message: 'start date must be before or same as end date',
+        })
+});
+
 export const ContentFormSchema = z.discriminatedUnion("category", [
     BannerSchema,
     PromotionSchema,
+    InsuranceSchema,
 ]);
 
 export type ContentFormValues = z.infer<typeof ContentFormSchema>
@@ -100,3 +127,18 @@ export const defaultPromotion: z.infer<typeof PromotionSchema> = {
     descriptionEn: "",
     startEndDate: [null, null],
 };
+
+export const defaultInsurance: z.infer<typeof InsuranceSchema> = {
+    category: "INSURANCE",
+    title: "",
+    status: "ACTIVE",
+    effectiveDate: [null, null],
+    coverImage: new File([], ""),
+    coverHyperLink: "",
+    titleTh: "",
+    titleEn: "",
+    descriptionTh: "",
+    descriptionEn: "",
+    startEndDate: [null, null],
+};
+
