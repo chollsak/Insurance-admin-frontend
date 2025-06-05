@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { ContentFormSchema, type ContentFormValues } from "../../../models";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useCreateContent } from "../../../hooks";
@@ -33,6 +33,7 @@ export function ContentForm({ mode, defaultValues }: IContentFromProps) {
     }
 
     useEffect(() => {
+        console.log("change default value trigger");
         reset(defaultValues);
     }, [defaultValues, reset]);
 
@@ -55,6 +56,7 @@ export function ContentForm({ mode, defaultValues }: IContentFromProps) {
                 <Box sx={{
                     maxWidth: "1010px",
                     width: "100%",
+                    // pt: 3,
                 }}>
                     <ContentHeader />
                     <Box sx={{
@@ -186,14 +188,14 @@ export function ContentForm({ mode, defaultValues }: IContentFromProps) {
 
 function ContentHeader() {
     return (
-        <Box sx={{
-            minHeight: "59px",
-            display: "flex",
-            gap: 1.5,
-            alignItems: "flex-end",
-            borderBottom: "1px solid #BDBDBD",
-            ml: 3,
-        }}>
+        <Box
+            sx={{
+                display: "flex",
+                gap: 1.5,
+                alignItems: "flex-end",
+                borderBottom: "1px solid #BDBDBD",
+                minHeight: "60px"
+            }}>
             <Typography
                 variant="h5"
                 component="h1"

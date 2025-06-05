@@ -1,5 +1,5 @@
 import { useOutletContext, useParams } from "react-router-dom";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material";
 import type { Dayjs } from "dayjs";
 import { useQuery } from "@tanstack/react-query";
@@ -39,16 +39,16 @@ export default function ContentEditScreen() {
     if (isError || !defaultValues) return <Box>Error or no data</Box>;
 
     return (
-        <Container
-            disableGutters={true}
+        <Box
             sx={{
                 ...sx,
+                pl: 3,
                 display: "flex",
                 bgcolor: "#F7FAFC",
                 overflowY: "hidden",
             }}>
             <ContentForm mode="edit" defaultValues={defaultValues} contentId={id} />
-        </Container>
+        </Box>
     );
 }
 

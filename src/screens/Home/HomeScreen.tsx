@@ -201,8 +201,9 @@ export default function HomeScreen() {
         onClose={handleCloseDialog}
         onConfirm={handleConfirmDelete} />
       <Stack
-        padding={3}
         spacing={2}
+        px={3}
+        pb={1}
         sx={{
           ...sx,
         }}>
@@ -378,8 +379,9 @@ function ContentHeader() {
     <Stack
       direction="row"
       spacing={1.5}
+      minHeight="60px"
       alignItems="flex-end"
-      borderBottom="1px solid #BDBDBD">
+      borderBottom="1px solid #BDBDBD" >
       <Typography
         variant="h5"
         component="h1"
@@ -435,6 +437,6 @@ function ContentHeader() {
           ข่าวสารและกิจกรรม
         </Typography>
       </Box>
-    </Stack>
+    </Stack >
   )
 }

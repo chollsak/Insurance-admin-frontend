@@ -34,8 +34,7 @@ export function Topbar({ onToggleSidebar }: ITopbarProps) {
       elevation={0}
       sx={{
         width: "100%",
-        height: "64px",
-        bgcolor: "white",
+        bgcolor: "#FFFFFF",
         boxShadow: "0 4px 4px #A0A0A04D",
         position: "relative",
         zIndex: 10,
@@ -44,7 +43,7 @@ export function Topbar({ onToggleSidebar }: ITopbarProps) {
         justifyContent: "space-between",
         backgroundColor: "white",
         padding: "0 16px",
-        height: "100%"
+        height: "100%",
       }}>
         <IconButton
           edge="start"
@@ -97,6 +96,6 @@ export function Topbar({ onToggleSidebar }: ITopbarProps) {
           </Menu>
         </Stack>
       </Toolbar>
-    </Paper>
+    </Paper >
   );
 };

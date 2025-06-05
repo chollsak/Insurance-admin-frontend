@@ -34,11 +34,10 @@ function BannerHeader() {
     return (
         <Box
             sx={{
-                minHeight: "60px",
                 display: "flex",
                 alignItems: "center",
-                px: 3,
-                gap: 1,
+                minHeight: "59px",
+                gap: 0.5
             }}>
             <IconButton>
                 <KeyboardBackspaceIcon
