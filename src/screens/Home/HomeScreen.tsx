@@ -25,13 +25,15 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import type { ContentCategory, ContentModel } from "../../models";
-import { useContentsQuery, useDeleteContent } from "../../hooks";
+import { useCommon, useContentsQuery, useDeleteContent } from "../../hooks";
 import { DisplayContentList } from "../../components";
 
 export default function HomeScreen() {
   const navigate = useNavigate();
 
   const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
+
+  const { handleCloseSidebar } = useCommon();
 
   const [selectedCategory, setSelectedCategory] = useState<"ALL" | ContentCategory>("ALL");
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -51,7 +53,8 @@ export default function HomeScreen() {
   const [draggedItem, setDraggedItem] = useState<ContentModel | null>(null);
   const [draggedOverIndex, setDraggedOverIndex] = useState<number | null>(null);
 
-  const handleNewClick = () => {
+  const handleNewContentClick = () => {
+    handleCloseSidebar();
     navigate("/content/new");
   };
 
@@ -132,7 +135,8 @@ export default function HomeScreen() {
     return `${start}-${end} of ${totalRow}`;
   };
 
-  const handleEdit = (item: ContentModel) => {
+  const handleEditContentClick = (item: ContentModel) => {
+    handleCloseSidebar();
     navigate(`/content/edit/${item.id}`);
   };
 
@@ -245,7 +249,7 @@ export default function HomeScreen() {
                   alt="Add"
                   sx={{ width: "16px", height: "16px" }} />
               }
-              onClick={handleNewClick}
+              onClick={handleNewContentClick}
               sx={{
                 bgcolor: "#3978E9",
                 height: 36,
@@ -274,7 +278,7 @@ export default function HomeScreen() {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           onDragEnd={handleDragEnd}
-          onEdit={handleEdit}
+          onEdit={handleEditContentClick}
           onDelete={handleDeleteClick}
         />}
 
