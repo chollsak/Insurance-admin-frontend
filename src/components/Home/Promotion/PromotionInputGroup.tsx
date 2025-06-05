@@ -6,7 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import type { ContentCategory, ContentFormValues, PromotionFormValues } from "../../../models";
-import { CalendarIcon } from "../../common";
+import { CalendarIcon, SmartTruncateText } from "../../common";
 
 const getPromotionErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<PromotionFormValues> | null => {
     if (category === "PROMOTION") {
@@ -54,24 +54,6 @@ function PromotionHeader() {
         </Box>
     );
 }
-
-const truncateFilename = (filename: string, maxLength: number = 20): string => {
-    if (filename.length <= maxLength) {
-        return filename;
-    }
-
-    const lastDotIndex = filename.lastIndexOf('.');
-    const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
-    const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
-
-    const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
-
-    if (maxNameLength <= 0) {
-        return "..." + extension;
-    }
-
-    return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
-};
 
 function CoverInputGroup() {
     const {
@@ -130,13 +112,15 @@ function CoverInputGroup() {
 
                             {(coverImage.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                                    <Typography sx={{
-                                        textDecoration: "underline",
-                                        fontSize: "20px",
-                                        lineHeight: "20px",
-                                    }}>
-                                        {truncateFilename(coverImage.name)}
-                                    </Typography>
+                                    <SmartTruncateText
+                                        value={coverImage.name}
+                                        maxWidth={160}
+                                        isFileName={true}
+                                        sx={{
+                                            textDecoration: "underline",
+                                            fontSize: "20px",
+                                            lineHeight: "20px",
+                                        }} />
                                     <IconButton
                                         onClick={handleRemoveFile}
                                         sx={{ width: "20px", height: "20px", p: 2, color: "#05058C" }}>

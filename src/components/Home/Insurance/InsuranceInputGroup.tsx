@@ -3,30 +3,13 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useFormContext, type FieldErrors } from "react-hook-form";
 import type { ContentCategory, ContentFormValues, InsuranceFormValues } from "../../../models";
+import { SmartTruncateText } from "../../common";
 
 const getInsuranceErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<InsuranceFormValues> | null => {
     if (category === "INSURANCE") {
         return errors as FieldErrors<InsuranceFormValues>;
     }
     return null;
-};
-
-const truncateFilename = (filename: string, maxLength: number = 20): string => {
-    if (filename.length <= maxLength) {
-        return filename;
-    }
-
-    const lastDotIndex = filename.lastIndexOf('.');
-    const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
-    const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
-
-    const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
-
-    if (maxNameLength <= 0) {
-        return "..." + extension;
-    }
-
-    return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
 };
 
 export function InsuranceInputGroup({ sx }: { sx?: SxProps<Theme> }) {
@@ -153,13 +136,15 @@ function CoverInputGroup() {
 
                             {(coverImage && coverImage.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                                    <Typography sx={{
-                                        textDecoration: "underline",
-                                        fontSize: "20px",
-                                        lineHeight: "20px",
-                                    }}>
-                                        {truncateFilename(coverImage.name)}
-                                    </Typography>
+                                    <SmartTruncateText
+                                        value={coverImage.name}
+                                        maxWidth={160}
+                                        isFileName={true}
+                                        sx={{
+                                            textDecoration: "underline",
+                                            fontSize: "20px",
+                                            lineHeight: "20px",
+                                        }} />
                                     <IconButton
                                         onClick={handleCoverRemoveFile}
                                         sx={{ width: "20px", height: "20px", p: 2, color: "#05058C" }}>
@@ -222,13 +207,15 @@ function CoverInputGroup() {
 
                             {(iconImage && iconImage.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                                    <Typography sx={{
-                                        textDecoration: "underline",
-                                        fontSize: "20px",
-                                        lineHeight: "20px",
-                                    }}>
-                                        {truncateFilename(iconImage.name)}
-                                    </Typography>
+                                    <SmartTruncateText
+                                        value={iconImage.name}
+                                        maxWidth={160}
+                                        isFileName={true}
+                                        sx={{
+                                            textDecoration: "underline",
+                                            fontSize: "20px",
+                                            lineHeight: "20px",
+                                        }} />
                                     <IconButton
                                         onClick={handleIconRemoveFile}
                                         sx={{ width: "20px", height: "20px", p: 2, color: "#05058C" }}>

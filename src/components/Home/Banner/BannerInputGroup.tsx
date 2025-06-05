@@ -1,9 +1,10 @@
-import { Box, Button, Divider, FormControl, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
 import { Controller, useFieldArray, useFormContext, type FieldErrors } from "react-hook-form";
+import { Box, Button, Divider, FormControl, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import type { BannerFormValues, ContentCategory, ContentFormValues } from "../../../models";
+import { SmartTruncateText } from "../../common";
 
 const getBannerErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<BannerFormValues> | null => {
     if (category === "BANNER") {
@@ -51,24 +52,6 @@ function BannerHeader() {
         </Box>
     );
 }
-
-const truncateFilename = (filename: string, maxLength: number = 20): string => {
-    if (filename.length <= maxLength) {
-        return filename;
-    }
-
-    const lastDotIndex = filename.lastIndexOf('.');
-    const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
-    const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
-
-    const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
-
-    if (maxNameLength <= 0) {
-        return "..." + extension;
-    }
-
-    return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
-};
 
 function CoverInputGroup() {
     const {
@@ -129,13 +112,15 @@ function CoverInputGroup() {
 
                             {(coverImage.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                                    <Typography sx={{
-                                        textDecoration: "underline",
-                                        fontSize: "20px",
-                                        lineHeight: "20px",
-                                    }}>
-                                        {truncateFilename(coverImage.name)}
-                                    </Typography>
+                                    <SmartTruncateText
+                                        value={coverImage.name}
+                                        maxWidth={160}
+                                        isFileName={true}
+                                        sx={{
+                                            textDecoration: "underline",
+                                            fontSize: "20px",
+                                            lineHeight: "20px",
+                                        }} />
                                     <IconButton
                                         onClick={handleRemoveFile}
                                         sx={{ width: "20px", height: "20px", p: 2, color: "#05058C" }}>
@@ -392,7 +377,15 @@ export function ContentItemInputGroup({ index, length, onRemove }: IContentItemI
 
                             {(contentImage?.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={1} >
-                                    <Typography sx={{ textDecoration: "underline", fontSize: "20px", lineHeight: "20px", }}>{truncateFilename(contentImage.name)}</Typography>
+                                    <SmartTruncateText
+                                        value={contentImage.name}
+                                        maxWidth={160}
+                                        isFileName={true}
+                                        sx={{
+                                            textDecoration: "underline",
+                                            fontSize: "20px",
+                                            lineHeight: "20px",
+                                        }} />
                                     <IconButton
                                         size="small"
                                         onClick={handleRemoveFile}

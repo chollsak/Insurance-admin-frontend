@@ -64,7 +64,6 @@ export function BaseContentInputGroup({ isEditMode }: { isEditMode: boolean }) {
                 <FormHelperText>{errors.category?.message}</FormHelperText>
             </FormControl>
 
-
             <FormControl error={!!errors.title} sx={{ maxWidth: "341px", width: "100%", }}>
                 <Typography component="label" htmlFor="title" sx={{ fontSize: "22px", width: "fit-content" }}>
                     Title <span style={{ color: "#FF0000" }}>*</span>
