@@ -24,6 +24,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
+import AddIcon from '@mui/icons-material/Add';
 import type { ContentCategory, ContentModel } from "../../models";
 import { useCommon, useContentsQuery, useDeleteContent } from "../../hooks";
 import { DisplayContentList } from "../../components";
@@ -198,8 +199,7 @@ export default function HomeScreen() {
         title={deleteDialog.item?.title!}
         open={deleteDialog.open}
         onClose={handleCloseDialog}
-        onConfirm={handleConfirmDelete}
-      />
+        onConfirm={handleConfirmDelete} />
       <Stack
         padding={3}
         spacing={2}
@@ -242,13 +242,7 @@ export default function HomeScreen() {
 
             <Button
               variant="contained"
-              startIcon={
-                <Box
-                  component="img"
-                  src="/src/assets/img/icons/add.png"
-                  alt="Add"
-                  sx={{ width: "16px", height: "16px" }} />
-              }
+              startIcon={<AddIcon sx={{ width: "24px", height: "24px" }} />}
               onClick={handleNewContentClick}
               sx={{
                 bgcolor: "#3978E9",
@@ -259,7 +253,14 @@ export default function HomeScreen() {
                 borderRadius: 1,
                 fontSize: "22px"
               }}>
-              New
+              <Typography
+                component={"span"}
+                sx={{
+                  fontSize: "22px",
+                  lineHeight: "100%",
+                  letterSpacing: "1px",
+                }}
+              >New</Typography>
             </Button>
           </Box>
         </Stack>
@@ -282,15 +283,16 @@ export default function HomeScreen() {
           onDelete={handleDeleteClick}
         />}
 
-        {/* Pagination */}
         <Stack
           direction="row"
           justifyContent="end"
           alignItems="center"
-          spacing={1}
-        >
-          <Stack direction="row" alignItems="center">
-            <Typography variant="body2" sx={{ mr: 2 }}>
+          spacing={1}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Typography sx={{
+              fontSize: "22px",
+              lineHeight: "100%",
+            }}>
               Rows per page
             </Typography>
             <Select
@@ -299,7 +301,6 @@ export default function HomeScreen() {
               size="small"
               IconComponent={ExpandMoreIcon}
               sx={{
-                mr: 2,
                 minWidth: 60,
                 height: 32,
               }}>
@@ -315,7 +316,10 @@ export default function HomeScreen() {
             </Select>
           </Stack>
 
-          <Typography variant="body2" sx={{}}>
+          <Typography sx={{
+            fontSize: "22px",
+            lineHeight: "100%",
+          }}>
             {getPaginationText()}
           </Typography>
 
