@@ -36,12 +36,13 @@ export default function HomeScreen() {
 
   const { handleCloseSidebar } = useCommon();
 
-  const [selectedCategory, setSelectedCategory] = useState<"ALL" | ContentCategory>("ALL");
+  const { setContentCategory, selectContentCategory } = useCommon();
+  
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
   const { mutate: deleteContent } = useDeleteContent();
-  const { data: response, isLoading } = useContentsQuery(selectedCategory, currentPage, rowsPerPage);
+  const { data: response, isLoading } = useContentsQuery(selectContentCategory, currentPage, rowsPerPage);
   const contentData = response?.data;
   const [newsItems, setNewsItems] = useState<ContentModel[]>([]);
 
@@ -60,7 +61,7 @@ export default function HomeScreen() {
   };
 
   const handleCategoryChange = (event: SelectChangeEvent): void => {
-    setSelectedCategory(event.target.value as "ALL" | ContentCategory);
+    setContentCategory(event.target.value as "ALL" | ContentCategory);
     setCurrentPage(0);
   };
 
@@ -220,7 +221,7 @@ export default function HomeScreen() {
               </Typography>
               <FormControl sx={{ minWidth: 210 }}>
                 <Select
-                  value={selectedCategory}
+                  value={selectContentCategory}
                   displayEmpty
                   onChange={handleCategoryChange}
                   IconComponent={ExpandMoreIcon}
