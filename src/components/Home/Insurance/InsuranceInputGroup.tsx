@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useFormContext, type FieldErrors } from "react-hook-form";
 import type { ContentCategory, ContentFormValues, InsuranceFormValues } from "../../../models";
 import { SmartTruncateText } from "../../common";
+import type { Dispatch, SetStateAction } from "react";
 
 const getInsuranceErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<InsuranceFormValues> | null => {
     if (category === "INSURANCE") {
@@ -11,8 +12,13 @@ const getInsuranceErrors = (category: ContentCategory, errors: FieldErrors<Conte
     }
     return null;
 };
+interface IInsuranceInputGroupProps {
+    setIsCoverImageChanged: Dispatch<SetStateAction<boolean>>;
+    setIsIconImageChanged: Dispatch<SetStateAction<boolean>>;
+    sx?: SxProps<Theme>
+}
 
-export function InsuranceInputGroup({ sx }: { sx?: SxProps<Theme> }) {
+export function InsuranceInputGroup({ setIsCoverImageChanged, setIsIconImageChanged, sx }: IInsuranceInputGroupProps) {
     return (
         <Box sx={{ ...sx, display: 'flex', flexDirection: 'column', }}>
             <InsuranceHeader />
@@ -22,7 +28,9 @@ export function InsuranceInputGroup({ sx }: { sx?: SxProps<Theme> }) {
                 display: 'flex',
                 flexDirection: 'column',
             }}>
-                <CoverInputGroup />
+                <CoverInputGroup
+                    setIsCoverImageChanged={setIsCoverImageChanged}
+                    setIsIconImageChanged={setIsIconImageChanged} />
                 <ContentInputGroup />
             </Box>
         </Box>
@@ -52,11 +60,15 @@ function InsuranceHeader() {
     );
 }
 
-function CoverInputGroup() {
+interface ICoverInputGroupProps {
+    setIsCoverImageChanged: Dispatch<SetStateAction<boolean>>;
+    setIsIconImageChanged: Dispatch<SetStateAction<boolean>>;
+}
+
+function CoverInputGroup({ setIsCoverImageChanged, setIsIconImageChanged }: ICoverInputGroupProps) {
     const {
         formState: { errors },
         setValue,
-        trigger,
         watch,
     } = useFormContext<ContentFormValues>();
 
@@ -67,29 +79,25 @@ function CoverInputGroup() {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
             setValue("coverImage", file);
-            trigger("coverImage");
+            setIsCoverImageChanged(_prev => true);
         }
     };
 
     const handleCoverRemoveFile = () => {
         setValue("coverImage", new File([], ""));
-        trigger("coverImage");
     };
 
     const handleIconFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
             setValue("iconImage", file);
-            trigger("iconImage");
+            setIsIconImageChanged(_prev => true);
         }
     };
 
     const handleIconRemoveFile = () => {
         setValue("iconImage", new File([], ""));
-        trigger("iconImage");
     };
-
-
 
     const insuranceErrors = getInsuranceErrors(watch("category"), errors);
 
@@ -121,8 +129,8 @@ function CoverInputGroup() {
                                     width: "100%",
                                     fontSize: "20px",
                                     lineHeight: "20px",
-                                    borderColor: `${!!errors.coverImage ? "#d32f2f" : "inherit"}`,
-                                    color: `${!!errors.coverImage ? "#d32f2f" : "inherit"}`
+                                    borderColor: `${!!insuranceErrors?.coverImage ? "#d32f2f" : "inherit"}`,
+                                    color: `${!!insuranceErrors?.coverImage ? "#d32f2f" : "inherit"}`
                                 }}>
                                 เลือกไฟล์
                                 <input
@@ -154,9 +162,9 @@ function CoverInputGroup() {
                             )}
                         </Box>
 
-                        {errors.coverImage && (
+                        {insuranceErrors?.coverImage && (
                             <Typography color="error" fontSize="12px" px={2}>
-                                {errors.coverImage.message}
+                                {insuranceErrors?.coverImage.message}
                             </Typography>
                         )}
                     </Box>

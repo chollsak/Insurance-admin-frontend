@@ -7,9 +7,16 @@ export const insuranceService = {
     return data;
   },
 
-  async createInsurance(formData : FormData):Promise<InsuranceResponse>{
-    const {data} = await apiClient.post<InsuranceResponse>("/insurances", formData, {
-      headers: {"Content-Type":"multipart/form-data"}
+  async createInsurance(formData: FormData): Promise<InsuranceResponse> {
+    const { data } = await apiClient.post<InsuranceResponse>("/insurances", formData, {
+      headers: { "Content-Type": "multipart/form-data" }
+    });
+    return data;
+  },
+
+  async updateInsuranceById(id: string, formData: FormData): Promise<InsuranceResponse> {
+    const { data } = await apiClient.patch<InsuranceResponse>(`/insurances/${id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" }
     });
     return data;
   }

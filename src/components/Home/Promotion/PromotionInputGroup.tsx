@@ -7,6 +7,7 @@ import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import type { ContentCategory, ContentFormValues, PromotionFormValues } from "../../../models";
 import { CalendarIcon, SmartTruncateText } from "../../common";
+import type { Dispatch, SetStateAction } from "react";
 
 const getPromotionErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<PromotionFormValues> | null => {
     if (category === "PROMOTION") {
@@ -15,7 +16,12 @@ const getPromotionErrors = (category: ContentCategory, errors: FieldErrors<Conte
     return null;
 };
 
-export function PromotionInputGroup({ sx }: { sx?: SxProps<Theme> }) {
+interface IPromotionInputGroupProps {
+    setIsCoverImageChanged: Dispatch<SetStateAction<boolean>>;
+    sx?: SxProps<Theme>;
+}
+
+export function PromotionInputGroup({ setIsCoverImageChanged, sx }: IPromotionInputGroupProps) {
     return (
         <Box sx={{ ...sx, display: 'flex', flexDirection: 'column', }}>
             <PromotionHeader />
@@ -25,7 +31,7 @@ export function PromotionInputGroup({ sx }: { sx?: SxProps<Theme> }) {
                 display: 'flex',
                 flexDirection: 'column',
             }}>
-                <CoverInputGroup />
+                <CoverInputGroup setIsCoverImageChanged={setIsCoverImageChanged} />
                 <ContentInputGroup />
             </Box>
         </Box>
@@ -55,12 +61,15 @@ function PromotionHeader() {
     );
 }
 
-function CoverInputGroup() {
+interface ICoverInputGroupProps {
+    setIsCoverImageChanged: Dispatch<SetStateAction<boolean>>;
+}
+
+function CoverInputGroup({ setIsCoverImageChanged }: ICoverInputGroupProps) {
     const {
         control,
         formState: { errors },
         setValue,
-        trigger,
         watch,
     } = useFormContext<ContentFormValues>();
     const coverImage = watch("coverImage");
@@ -69,7 +78,7 @@ function CoverInputGroup() {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
             setValue("coverImage", file);
-            trigger("coverImage");
+            setIsCoverImageChanged(_prev => true);
         }
     };
 

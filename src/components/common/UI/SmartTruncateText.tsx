@@ -30,8 +30,7 @@ export function SmartTruncateText({
                 display="flex"
                 alignItems="center"
                 maxWidth={maxWidth}
-                overflow="hidden"
-            >
+                overflow="hidden">
                 <Typography
                     noWrap
                     sx={{
@@ -41,15 +40,13 @@ export function SmartTruncateText({
                         minWidth: 0,
                         flexShrink: 1,
                         ...sx,
-                    }}
-                >
+                    }}>
                     {namePart}
                 </Typography>
 
                 {isFileName && (
                     <Typography
-                        sx={{ flexShrink: 0, marginLeft: 0.25, ...sx }}
-                    >
+                        sx={{ flexShrink: 0, marginLeft: 0.25, ...sx }}>
                         {extension}
                     </Typography>
                 )}
