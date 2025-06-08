@@ -37,7 +37,7 @@ export default function HomeScreen() {
   const { handleCloseSidebar } = useCommon();
 
   const { setContentCategory, selectContentCategory } = useCommon();
-  
+
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
