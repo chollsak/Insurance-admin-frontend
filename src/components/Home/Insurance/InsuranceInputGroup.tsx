@@ -3,6 +3,8 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useFormContext, type FieldErrors } from "react-hook-form";
 import type { ContentCategory, ContentFormValues, InsuranceFormValues } from "../../../models";
+import { SmartTruncateText } from "../../common";
+import type { Dispatch, SetStateAction } from "react";
 
 const getInsuranceErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<InsuranceFormValues> | null => {
     if (category === "INSURANCE") {
@@ -10,26 +12,13 @@ const getInsuranceErrors = (category: ContentCategory, errors: FieldErrors<Conte
     }
     return null;
 };
+interface IInsuranceInputGroupProps {
+    setIsCoverImageChanged: Dispatch<SetStateAction<boolean>>;
+    setIsIconImageChanged: Dispatch<SetStateAction<boolean>>;
+    sx?: SxProps<Theme>
+}
 
-const truncateFilename = (filename: string, maxLength: number = 20): string => {
-    if (filename.length <= maxLength) {
-        return filename;
-    }
-
-    const lastDotIndex = filename.lastIndexOf('.');
-    const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
-    const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
-
-    const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
-
-    if (maxNameLength <= 0) {
-        return "..." + extension;
-    }
-
-    return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
-};
-
-export function InsuranceInputGroup({ sx }: { sx?: SxProps<Theme> }) {
+export function InsuranceInputGroup({ setIsCoverImageChanged, setIsIconImageChanged, sx }: IInsuranceInputGroupProps) {
     return (
         <Box sx={{ ...sx, display: 'flex', flexDirection: 'column', }}>
             <InsuranceHeader />
@@ -39,7 +28,9 @@ export function InsuranceInputGroup({ sx }: { sx?: SxProps<Theme> }) {
                 display: 'flex',
                 flexDirection: 'column',
             }}>
-                <CoverInputGroup />
+                <CoverInputGroup
+                    setIsCoverImageChanged={setIsCoverImageChanged}
+                    setIsIconImageChanged={setIsIconImageChanged} />
                 <ContentInputGroup />
             </Box>
         </Box>
@@ -69,11 +60,15 @@ function InsuranceHeader() {
     );
 }
 
-function CoverInputGroup() {
+interface ICoverInputGroupProps {
+    setIsCoverImageChanged: Dispatch<SetStateAction<boolean>>;
+    setIsIconImageChanged: Dispatch<SetStateAction<boolean>>;
+}
+
+function CoverInputGroup({ setIsCoverImageChanged, setIsIconImageChanged }: ICoverInputGroupProps) {
     const {
         formState: { errors },
         setValue,
-        trigger,
         watch,
     } = useFormContext<ContentFormValues>();
 
@@ -84,29 +79,25 @@ function CoverInputGroup() {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
             setValue("coverImage", file);
-            trigger("coverImage");
+            setIsCoverImageChanged(_prev => true);
         }
     };
 
     const handleCoverRemoveFile = () => {
         setValue("coverImage", new File([], ""));
-        trigger("coverImage");
     };
 
     const handleIconFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
             setValue("iconImage", file);
-            trigger("iconImage");
+            setIsIconImageChanged(_prev => true);
         }
     };
 
     const handleIconRemoveFile = () => {
         setValue("iconImage", new File([], ""));
-        trigger("iconImage");
     };
-
-
 
     const insuranceErrors = getInsuranceErrors(watch("category"), errors);
 
@@ -138,8 +129,8 @@ function CoverInputGroup() {
                                     width: "100%",
                                     fontSize: "20px",
                                     lineHeight: "20px",
-                                    borderColor: `${!!errors.coverImage ? "#d32f2f" : "inherit"}`,
-                                    color: `${!!errors.coverImage ? "#d32f2f" : "inherit"}`
+                                    borderColor: `${!!insuranceErrors?.coverImage ? "#d32f2f" : "inherit"}`,
+                                    color: `${!!insuranceErrors?.coverImage ? "#d32f2f" : "inherit"}`
                                 }}>
                                 เลือกไฟล์
                                 <input
@@ -153,13 +144,15 @@ function CoverInputGroup() {
 
                             {(coverImage && coverImage.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                                    <Typography sx={{
-                                        textDecoration: "underline",
-                                        fontSize: "20px",
-                                        lineHeight: "20px",
-                                    }}>
-                                        {truncateFilename(coverImage.name)}
-                                    </Typography>
+                                    <SmartTruncateText
+                                        value={coverImage.name}
+                                        maxWidth={160}
+                                        isFileName={true}
+                                        sx={{
+                                            textDecoration: "underline",
+                                            fontSize: "20px",
+                                            lineHeight: "20px",
+                                        }} />
                                     <IconButton
                                         onClick={handleCoverRemoveFile}
                                         sx={{ width: "20px", height: "20px", p: 2, color: "#05058C" }}>
@@ -169,9 +162,9 @@ function CoverInputGroup() {
                             )}
                         </Box>
 
-                        {errors.coverImage && (
+                        {insuranceErrors?.coverImage && (
                             <Typography color="error" fontSize="12px" px={2}>
-                                {errors.coverImage.message}
+                                {insuranceErrors?.coverImage.message}
                             </Typography>
                         )}
                     </Box>
@@ -222,13 +215,15 @@ function CoverInputGroup() {
 
                             {(iconImage && iconImage.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                                    <Typography sx={{
-                                        textDecoration: "underline",
-                                        fontSize: "20px",
-                                        lineHeight: "20px",
-                                    }}>
-                                        {truncateFilename(iconImage.name)}
-                                    </Typography>
+                                    <SmartTruncateText
+                                        value={iconImage.name}
+                                        maxWidth={160}
+                                        isFileName={true}
+                                        sx={{
+                                            textDecoration: "underline",
+                                            fontSize: "20px",
+                                            lineHeight: "20px",
+                                        }} />
                                     <IconButton
                                         onClick={handleIconRemoveFile}
                                         sx={{ width: "20px", height: "20px", p: 2, color: "#05058C" }}>
