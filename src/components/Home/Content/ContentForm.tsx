@@ -711,7 +711,7 @@ export function DisplayPreviewPromotion() {
       <Box
         sx={{
           width: "400px",
-          height: "550px",
+          height: "480px",
           padding: 2,
         }}
       >
@@ -751,18 +751,8 @@ export function DisplayPreviewPromotion() {
             <Box
               sx={{
                 display: { xs: "none", md: "block" },
-                mb: 3,
               }}
             >
-              <Typography
-                variant="h6"
-                sx={{
-                  color: "#05058C",
-                  fontSize: "20px",
-                }}
-              >
-                มุมมองเดสก์ท็อป:
-              </Typography>
               <Box
                 sx={{
                   width: 500,
@@ -771,6 +761,7 @@ export function DisplayPreviewPromotion() {
                   height: "100%",
                   transform: "scale(0.9)",
                   transformOrigin: "top left",
+                  marginTop:'20px'
                 }}
               >
                 <PromotionCard 
@@ -861,7 +852,7 @@ export function DisplayPreviewPromotion() {
             display: "flex",
             flexDirection: "column",
             flexGrow: 1,
-            minHeight: "200px",
+            minHeight: "150px",
           }}
         >
           <Typography
