@@ -36,7 +36,6 @@ export const BannerSchema = BaseContentSchema.extend({
   contents: z
     .array(
       z.object({
-        contentItemId: z.string().optional(),
         contentImage: z.instanceof(File).refine((f) => f.size > 0, { message: "โปรดเลือกภาพเนื้อหา" }),
         contentHyperLink: z.string().url(),
       })
@@ -77,27 +76,16 @@ export const InsuranceSchema = BaseContentSchema.extend({
   descriptionEn: z.string().min(3, "descriptionEn must be at least 3 characters"),
 });
 
-export const SuitInsuranceSchema = BaseContentSchema.extend({
-  category: z.literal("SUIT_INSURANCE"),
-  image: z
-    .instanceof(File)
-    .refine(file => file.size > 0, { message: "โปรดเลือกภาพ" }),
-  titleTh: z.string().min(3, "titleTh must be at least 3 characters"),
-  titleEn: z.string().min(3, "titleEn must be at least 3 characters"),
-});
-
 export const ContentFormSchema = z.discriminatedUnion("category", [
   BannerSchema,
   PromotionSchema,
   InsuranceSchema,
-  SuitInsuranceSchema,
 ]);
 
 export type ContentFormValues = z.infer<typeof ContentFormSchema>;
 export type BannerFormValues = z.infer<typeof BannerSchema>;
 export type PromotionFormValues = z.infer<typeof PromotionSchema>;
 export type InsuranceFormValues = z.infer<typeof InsuranceSchema>;
-export type SuitInsuranceFormValues = z.infer<typeof SuitInsuranceSchema>;
 
 export const defaultBanner: BannerFormValues = {
   category: "BANNER",
@@ -136,12 +124,3 @@ export const defaultInsurance: InsuranceFormValues = {
   descriptionEn: "",
 };
 
-export const defaultSuitInsurance: SuitInsuranceFormValues = {
-  category: "SUIT_INSURANCE",
-  title: "",
-  status: "ACTIVE",
-  effectiveDate: [null, null],
-  image: new File([], ""),
-  titleTh: "",
-  titleEn: "",
-};

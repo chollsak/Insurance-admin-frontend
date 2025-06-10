@@ -1,7 +1,8 @@
 import { useOutletContext, useParams } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material";
 import type { Dayjs } from "dayjs";
+import { useQuery } from "@tanstack/react-query";
 import { useContentQueryById } from "../../hooks";
 import { ContentForm } from "../../components";
 import type {
@@ -12,40 +13,48 @@ import type {
     InsuranceModel,
     PromotionFormValues,
     PromotionModel,
-    SuitInsuranceFormValues,
     SuitInsuranceModel
 } from "../../models";
-import { parseIsoToDayjs } from "../../utils";
+import { getImageUrl, imageUrlToFile, parseIsoToDayjs } from "../../utils";
 
 export default function ContentEditScreen() {
     const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
-    const { id: contentId } = useParams<{ id: string }>();
-    console.log("content id", contentId!);
-    const { data: rawData, isLoading: isRawLoading, isError } = useContentQueryById(contentId!);
+    const { id } = useParams<{ id: string }>();
+    const { data: rawData, isLoading: isRawLoading } = useContentQueryById(id!);
 
-    if (isRawLoading) return <Box>Loading...</Box>;
-    if (isError || !rawData?.data) return <Box>Error or no data</Box>;
+    const {
+        data: defaultValues,
+        isLoading: isTransformLoading,
+        isError,
+    } = useQuery({
+        queryKey: ["defaultFormValues", id],
+        queryFn: async () => {
+            if (!rawData?.data) throw new Error("No content");
+            return await mapContentResponseToDefaultFormValues(rawData.data);
+        },
+        enabled: !!rawData?.data,
+    });
 
-    const defaultValues = mapContentResponseToDefaultFormValues(rawData.data);
+    if (isRawLoading || isTransformLoading) return <Box>Loading...</Box>;
+    if (isError || !defaultValues) return <Box>Error or no data</Box>;
 
     return (
-        <Box
+        <Container
+            disableGutters={true}
             sx={{
                 ...sx,
-                pl: 3,
                 display: "flex",
                 bgcolor: "#F7FAFC",
                 overflowY: "hidden",
             }}>
-            <ContentForm mode="edit" defaultValues={defaultValues} contentId={contentId} id={rawData?.data?.id} />
-        </Box>
+            <ContentForm mode="edit" defaultValues={defaultValues} contentId={id} />
+        </Container>
     );
 }
 
-function mapContentResponseToDefaultFormValues(
+async function mapContentResponseToDefaultFormValues(
     content: BannerModel | PromotionModel | SuitInsuranceModel | InsuranceModel
-): (ContentFormValues | undefined) {
-    const dummyContent = new Uint8Array([32]);
+): Promise<ContentFormValues | undefined> {
     const title = content.title;
     const status = content.status;
     const effectiveDate: [Dayjs | null, Dayjs | null] = [
@@ -59,13 +68,14 @@ function mapContentResponseToDefaultFormValues(
             title: title,
             status: status,
             effectiveDate: effectiveDate,
-            coverImage: new File([dummyContent], content.coverImagePath),
+            coverImage: await imageUrlToFile(getImageUrl(content.coverImagePath)!, content.coverImagePath),
             coverHyperLink: content.coverHyperLink,
-            contents: content.contents.map(bc => ({
-                contentItemId: bc.id,
-                contentImage: new File([dummyContent], bc.contentImagePath),
-                contentHyperLink: bc.contentHyperLink,
-            }))
+            contents: await Promise.all(
+                content.contents.map(async (bc) => ({
+                    contentImage: await imageUrlToFile(getImageUrl(bc.contentImagePath)!, bc.contentImagePath),
+                    contentHyperLink: bc.contentHyperLink,
+                }))
+            ),
         };
 
         return defaultBanner;
@@ -80,7 +90,7 @@ function mapContentResponseToDefaultFormValues(
             title: title,
             status: status,
             effectiveDate: effectiveDate,
-            coverImage: new File([dummyContent], content.coverImagePath),
+            coverImage: await imageUrlToFile(getImageUrl(content.coverImagePath)!, content.coverImagePath),
             coverHyperLink: "https://www.youtube.com/watch?v=_XQ_9qaQsQU&t=779s",
             titleTh: content.titleTh,
             titleEn: content.titleEn,
@@ -96,24 +106,12 @@ function mapContentResponseToDefaultFormValues(
             title: title,
             status: status,
             effectiveDate: effectiveDate,
-            coverImage: new File([dummyContent], content.coverImagePath),
-            iconImage: new File([dummyContent], content.iconImagePath),
+            coverImage: await imageUrlToFile(getImageUrl(content.coverImagePath)!, content.coverImagePath),
+            iconImage: await imageUrlToFile(getImageUrl(content.iconImagePath)!, content.iconImagePath),
             titleTh: content.titleTh,
             titleEn: content.titleEn,
             descriptionTh: content.descriptionTh,
             descriptionEn: content.descriptionEn,
-        };
-
-        return defaultInsurance;
-    } else if (content.category === "SUIT_INSURANCE") {
-        const defaultInsurance: SuitInsuranceFormValues = {
-            category: "SUIT_INSURANCE",
-            title: title,
-            status: status,
-            effectiveDate: effectiveDate,
-            image: new File([dummyContent], content.imagePath),
-            titleTh: content.titleTh,
-            titleEn: content.titleEn,
         };
 
         return defaultInsurance;

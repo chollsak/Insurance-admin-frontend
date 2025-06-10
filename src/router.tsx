@@ -1,22 +1,44 @@
-// router.tsx
 import {
     createBrowserRouter,
     createRoutesFromElements,
     Route,
 } from "react-router-dom";
-import { AppLayout, Loadable } from "./components";
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
+import { AppLayout, ErrorBoundary } from "./components";
 
-const HomeScreen = Loadable(lazy(() => import("./screens/Home/HomeScreen")));
-const ContentCreateScreen = Loadable(lazy(() => import("./screens/Home/ContentCreateScreen")));
-const ContentEditScreen = Loadable(lazy(() => import("./screens/Home/ContentEditScreen")));
+const HomeScreen = lazy(() => import("./screens/Home/HomeScreen"));
+const ContentCreateScreen = lazy(() => import("./screens/Home/ContentCreateScreen"));
+const ContentEditScreen = lazy(() => import("./screens/Home/ContentEditScreen"));
+
+const Loading = () => <div>Loading...</div>;
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
-        <Route path="/" element={<AppLayout />}>
-            <Route index element={HomeScreen} />
-            <Route path="content/new" element={ContentCreateScreen} />
-            <Route path="content/edit/:id" element={ContentEditScreen} />
+        <Route path="/" element={<AppLayout />} errorElement={<ErrorBoundary />}>
+            <Route
+                index
+                element={
+                    <Suspense fallback={<Loading />}>
+                        <HomeScreen />
+                    </Suspense>
+                }
+            />
+            <Route
+                path="content/new"
+                element={
+                    <Suspense fallback={<Loading />}>
+                        <ContentCreateScreen />
+                    </Suspense>
+                }
+            />
+            <Route
+                path="content/edit/:id"
+                element={
+                    <Suspense fallback={<Loading />}>
+                        <ContentEditScreen />
+                    </Suspense>
+                }
+            />
             <Route path="*" element={<div>404 Not Found</div>} />
         </Route>
     )

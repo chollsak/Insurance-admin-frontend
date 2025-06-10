@@ -2,20 +2,14 @@ import {
     createContext,
     useState,
     useEffect,
-    type ReactNode,
     type Dispatch,
-    type SetStateAction,
+    type ReactNode,
+    type SetStateAction
 } from "react";
-import type { ContentCategory } from "../models";
 
 export interface ICommonContextProps {
     isSidebarOpen: boolean;
-    handleToggleSidebar: () => void;
-    handleCloseSidebar: () => void;
-    handleOpenSidebar: () => void;
-
-    selectContentCategory: "ALL" | ContentCategory;
-    setContentCategory: Dispatch<SetStateAction<"ALL" | ContentCategory>>;
+    setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export const CommonContext = createContext<ICommonContextProps | undefined>(undefined);
@@ -26,33 +20,12 @@ export function CommonProvider({ children }: { children: ReactNode }) {
         return stored !== null ? JSON.parse(stored) : true;
     });
 
-    const [selectContentCategory, setContentCategory] = useState<"ALL" | ContentCategory>(() => {
-        const stored = localStorage.getItem("selectedContentCategory");
-        return stored !== null ? JSON.parse(stored) : "ALL";
-    });
-
-    function handleToggleSidebar() {
-        setIsSidebarOpen(prev => !prev);
-    }
-
-    function handleCloseSidebar() {
-        setIsSidebarOpen(_prev => false);
-    }
-
-    function handleOpenSidebar() {
-        setIsSidebarOpen(_prev => true);
-    }
-
     useEffect(() => {
         localStorage.setItem("isSidebarOpen", JSON.stringify(isSidebarOpen));
     }, [isSidebarOpen]);
 
-    useEffect(() => {
-        localStorage.setItem("selectedContentCategory", JSON.stringify(selectContentCategory));
-    }, [selectContentCategory]);
-
     return (
-        <CommonContext.Provider value={{ isSidebarOpen, handleToggleSidebar, handleCloseSidebar, handleOpenSidebar, selectContentCategory, setContentCategory }}>
+        <CommonContext.Provider value={{ isSidebarOpen, setIsSidebarOpen }}>
             {children}
         </CommonContext.Provider>
     );

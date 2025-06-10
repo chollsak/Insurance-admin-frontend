@@ -1,2 +1,1 @@
-export { default as ErrorDisplay } from "./ErrorDisplay";
-export * from "./Loadable";
+export { default as ErrorBoundary } from "./ErrorBoundary";

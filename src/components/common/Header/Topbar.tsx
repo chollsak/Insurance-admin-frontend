@@ -1,17 +1,14 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Toolbar,
   IconButton,
   Typography,
+  Box,
   Avatar,
   Menu,
   MenuItem,
-  Paper,
-  Stack
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import PersonRoundedIcon from '@mui/icons-material/PersonOutlineOutlined';
+  Paper
+} from '@mui/material';
 
 interface ITopbarProps {
   onToggleSidebar: () => void;
@@ -33,69 +30,77 @@ export function Topbar({ onToggleSidebar }: ITopbarProps) {
     <Paper
       elevation={0}
       sx={{
-        width: "100%",
-        bgcolor: "#FFFFFF",
-        boxShadow: "0 4px 4px #A0A0A04D",
-        position: "relative",
+        width: '100%',
+        height: '64px',
+        bgcolor: 'white',
+        boxShadow: '0 4px 4px #A0A0A04D',
+        position: 'relative',
         zIndex: 10,
-      }}>
+      }}
+    >
       <Toolbar sx={{
-        justifyContent: "space-between",
-        backgroundColor: "white",
-        padding: "0 16px",
-        height: "100%",
+        justifyContent: 'space-between',
+        backgroundColor: 'white',
+        padding: '0 16px',
+        height: '100%'
       }}>
+        {/* Hamburger Menu */}
         <IconButton
           edge="start"
           color="inherit"
           aria-label="menu"
           onClick={onToggleSidebar}
-          sx={{ color: "#063868" }}>
-          <MenuIcon sx={{ width: "24px", height: "24px" }} />
+          sx={{ color: '#063868' }}
+        >
+          <Box
+            component="img"
+            src="/src/assets/img/icons/menu.png"
+            alt="Menu"
+            sx={{ width: '24px', height: '24px' }}
+          />
         </IconButton>
 
-        <Stack direction={"row"} alignItems={"center"} spacing={1}>
+        {/* Right side - User profile */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar
             sx={{
-              bgcolor: "#1E4C9A",
+              bgcolor: '#1E4C9A',
               width: 40,
               height: 40
-            }}>
-            <PersonRoundedIcon />
+            }}
+          >
+            <Typography sx={{ color: 'white', fontWeight: 'bold' }}>
+              น
+            </Typography>
           </Avatar>
 
-          <Stack direction={"row"} alignItems={"center"} spacing={0.5} >
-            <Stack>
-              <Typography sx={{
-                color: "#404040",
-                fontSize: "18px",
-                fontWeight: 500,
-                lineHeight: "100%",
-              }}>
+          <Box sx={{ ml: 1, display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleMenuClick}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <Typography variant="subtitle1" sx={{ color: '#063868', fontWeight: 'bold', lineHeight: 1.2 }}>
                 นางสี ซีย์ประมาณ
               </Typography>
-              <Typography sx={{
-                fontSize: "14px",
-                lineHeight: "100%",
-                color: "#565656",
-              }}>
+              <Typography variant="body2" sx={{ color: '#063868', lineHeight: 1.2 }}>
                 Admin
               </Typography>
-            </Stack>
-            <IconButton onClick={handleMenuClick}>
-              <ExpandMoreIcon sx={{ width: "24px", height: "24px" }} />
-            </IconButton>
-          </Stack>
+            </Box>
+            <Box
+              component="img"
+              src="/src/assets/img/icons/v.png"
+              alt="Arrow Down"
+              sx={{ width: '24px', height: '24px', ml: 1 }}
+            />
+          </Box>
 
           <Menu
             anchorEl={anchorEl}
             open={open}
-            onClose={handleMenuClose}>
+            onClose={handleMenuClose}
+          >
             <MenuItem onClick={handleMenuClose}>โปรไฟล์</MenuItem>
             <MenuItem onClick={handleMenuClose}>ออกจากระบบ</MenuItem>
           </Menu>
-        </Stack>
+        </Box>
       </Toolbar>
-    </Paper >
+    </Paper>
   );
 };

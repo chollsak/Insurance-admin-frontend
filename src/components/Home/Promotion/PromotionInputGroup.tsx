@@ -6,8 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import type { ContentCategory, ContentFormValues, PromotionFormValues } from "../../../models";
-import { CalendarIcon, SmartTruncateText } from "../../common";
-import type { Dispatch, SetStateAction } from "react";
+import { CalendarIcon } from "../../common";
 
 const getPromotionErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<PromotionFormValues> | null => {
     if (category === "PROMOTION") {
@@ -16,12 +15,7 @@ const getPromotionErrors = (category: ContentCategory, errors: FieldErrors<Conte
     return null;
 };
 
-interface IPromotionInputGroupProps {
-    setIsCoverImageChanged: Dispatch<SetStateAction<boolean>>;
-    sx?: SxProps<Theme>;
-}
-
-export function PromotionInputGroup({ setIsCoverImageChanged, sx }: IPromotionInputGroupProps) {
+export function PromotionInputGroup({ sx }: { sx?: SxProps<Theme> }) {
     return (
         <Box sx={{ ...sx, display: 'flex', flexDirection: 'column', }}>
             <PromotionHeader />
@@ -31,7 +25,7 @@ export function PromotionInputGroup({ setIsCoverImageChanged, sx }: IPromotionIn
                 display: 'flex',
                 flexDirection: 'column',
             }}>
-                <CoverInputGroup setIsCoverImageChanged={setIsCoverImageChanged} />
+                <CoverInputGroup />
                 <ContentInputGroup />
             </Box>
         </Box>
@@ -61,15 +55,30 @@ function PromotionHeader() {
     );
 }
 
-interface ICoverInputGroupProps {
-    setIsCoverImageChanged: Dispatch<SetStateAction<boolean>>;
-}
+const truncateFilename = (filename: string, maxLength: number = 20): string => {
+    if (filename.length <= maxLength) {
+        return filename;
+    }
 
-function CoverInputGroup({ setIsCoverImageChanged }: ICoverInputGroupProps) {
+    const lastDotIndex = filename.lastIndexOf('.');
+    const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
+    const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
+
+    const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
+
+    if (maxNameLength <= 0) {
+        return "..." + extension;
+    }
+
+    return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
+};
+
+function CoverInputGroup() {
     const {
         control,
         formState: { errors },
         setValue,
+        trigger,
         watch,
     } = useFormContext<ContentFormValues>();
     const coverImage = watch("coverImage");
@@ -78,7 +87,7 @@ function CoverInputGroup({ setIsCoverImageChanged }: ICoverInputGroupProps) {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
             setValue("coverImage", file);
-            setIsCoverImageChanged(_prev => true);
+            trigger("coverImage");
         }
     };
 
@@ -121,15 +130,13 @@ function CoverInputGroup({ setIsCoverImageChanged }: ICoverInputGroupProps) {
 
                             {(coverImage.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                                    <SmartTruncateText
-                                        value={coverImage.name}
-                                        maxWidth={160}
-                                        isFileName={true}
-                                        sx={{
-                                            textDecoration: "underline",
-                                            fontSize: "20px",
-                                            lineHeight: "20px",
-                                        }} />
+                                    <Typography sx={{
+                                        textDecoration: "underline",
+                                        fontSize: "20px",
+                                        lineHeight: "20px",
+                                    }}>
+                                        {truncateFilename(coverImage.name)}
+                                    </Typography>
                                     <IconButton
                                         onClick={handleRemoveFile}
                                         sx={{ width: "20px", height: "20px", p: 2, color: "#05058C" }}>

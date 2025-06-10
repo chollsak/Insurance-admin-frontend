@@ -24,9 +24,8 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
-import AddIcon from '@mui/icons-material/Add';
 import type { ContentCategory, ContentModel } from "../../models";
-import { useCommon, useContentsQuery, useDeleteContent } from "../../hooks";
+import { useContentsQuery, useDeleteContent } from "../../hooks";
 import { DisplayContentList } from "../../components";
 
 export default function HomeScreen() {
@@ -34,15 +33,12 @@ export default function HomeScreen() {
 
   const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
 
-  const { handleCloseSidebar } = useCommon();
-
-  const { setContentCategory, selectContentCategory } = useCommon();
-
+  const [selectedCategory, setSelectedCategory] = useState<"ALL" | ContentCategory>("ALL");
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
   const { mutate: deleteContent } = useDeleteContent();
-  const { data: response, isLoading } = useContentsQuery(selectContentCategory, currentPage, rowsPerPage);
+  const { data: response, isLoading } = useContentsQuery(selectedCategory, currentPage, rowsPerPage);
   const contentData = response?.data;
   const [newsItems, setNewsItems] = useState<ContentModel[]>([]);
 
@@ -55,13 +51,12 @@ export default function HomeScreen() {
   const [draggedItem, setDraggedItem] = useState<ContentModel | null>(null);
   const [draggedOverIndex, setDraggedOverIndex] = useState<number | null>(null);
 
-  const handleNewContentClick = () => {
-    handleCloseSidebar();
+  const handleNewClick = () => {
     navigate("/content/new");
   };
 
   const handleCategoryChange = (event: SelectChangeEvent): void => {
-    setContentCategory(event.target.value as "ALL" | ContentCategory);
+    setSelectedCategory(event.target.value as "ALL" | ContentCategory);
     setCurrentPage(0);
   };
 
@@ -137,8 +132,7 @@ export default function HomeScreen() {
     return `${start}-${end} of ${totalRow}`;
   };
 
-  const handleEditContentClick = (item: ContentModel) => {
-    handleCloseSidebar();
+  const handleEdit = (item: ContentModel) => {
     navigate(`/content/edit/${item.id}`);
   };
 
@@ -200,11 +194,11 @@ export default function HomeScreen() {
         title={deleteDialog.item?.title!}
         open={deleteDialog.open}
         onClose={handleCloseDialog}
-        onConfirm={handleConfirmDelete} />
+        onConfirm={handleConfirmDelete}
+      />
       <Stack
+        padding={3}
         spacing={2}
-        px={3}
-        pb={1}
         sx={{
           ...sx,
         }}>
@@ -221,7 +215,7 @@ export default function HomeScreen() {
               </Typography>
               <FormControl sx={{ minWidth: 210 }}>
                 <Select
-                  value={selectContentCategory}
+                  value={selectedCategory}
                   displayEmpty
                   onChange={handleCategoryChange}
                   IconComponent={ExpandMoreIcon}
@@ -244,8 +238,14 @@ export default function HomeScreen() {
 
             <Button
               variant="contained"
-              startIcon={<AddIcon sx={{ width: "24px", height: "24px" }} />}
-              onClick={handleNewContentClick}
+              startIcon={
+                <Box
+                  component="img"
+                  src="/src/assets/img/icons/add.png"
+                  alt="Add"
+                  sx={{ width: "16px", height: "16px" }} />
+              }
+              onClick={handleNewClick}
               sx={{
                 bgcolor: "#3978E9",
                 height: 36,
@@ -255,14 +255,7 @@ export default function HomeScreen() {
                 borderRadius: 1,
                 fontSize: "22px"
               }}>
-              <Typography
-                component={"span"}
-                sx={{
-                  fontSize: "22px",
-                  lineHeight: "100%",
-                  letterSpacing: "1px",
-                }}
-              >New</Typography>
+              New
             </Button>
           </Box>
         </Stack>
@@ -281,20 +274,19 @@ export default function HomeScreen() {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           onDragEnd={handleDragEnd}
-          onEdit={handleEditContentClick}
+          onEdit={handleEdit}
           onDelete={handleDeleteClick}
         />}
 
+        {/* Pagination */}
         <Stack
           direction="row"
           justifyContent="end"
           alignItems="center"
-          spacing={1}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Typography sx={{
-              fontSize: "22px",
-              lineHeight: "100%",
-            }}>
+          spacing={1}
+        >
+          <Stack direction="row" alignItems="center">
+            <Typography variant="body2" sx={{ mr: 2 }}>
               Rows per page
             </Typography>
             <Select
@@ -303,6 +295,7 @@ export default function HomeScreen() {
               size="small"
               IconComponent={ExpandMoreIcon}
               sx={{
+                mr: 2,
                 minWidth: 60,
                 height: 32,
               }}>
@@ -318,10 +311,7 @@ export default function HomeScreen() {
             </Select>
           </Stack>
 
-          <Typography sx={{
-            fontSize: "22px",
-            lineHeight: "100%",
-          }}>
+          <Typography variant="body2" sx={{}}>
             {getPaginationText()}
           </Typography>
 
@@ -380,9 +370,8 @@ function ContentHeader() {
     <Stack
       direction="row"
       spacing={1.5}
-      minHeight="60px"
       alignItems="flex-end"
-      borderBottom="1px solid #BDBDBD" >
+      borderBottom="1px solid #BDBDBD">
       <Typography
         variant="h5"
         component="h1"
@@ -438,6 +427,6 @@ function ContentHeader() {
           ข่าวสารและกิจกรรม
         </Typography>
       </Box>
-    </Stack >
+    </Stack>
   )
 }
