@@ -5,17 +5,13 @@ import { Sidebar } from "../Sidebar";
 import { Topbar } from "../Header";
 
 export default function AppLayout() {
-    const { isSidebarOpen, setIsSidebarOpen } = useCommon();
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
+    const { isSidebarOpen, handleToggleSidebar } = useCommon();
 
     const context = {
         sx: {
             flexGrow: 1,
-            overflow: "auto",
+            overflow: "hidden",
             backgroundColor: "#f8f9fa",
-            mt: 1,
         }
     }
 
@@ -37,16 +33,12 @@ export default function AppLayout() {
                 display: "flex",
                 flexDirection: "column",
                 flexGrow: 1,
-                height: "100vh",
+                maxHeight: "100vh",
+                overflow: "hidden",
             }}>
-                <Box sx={{
-                    height: "55px",
-                    ml: 0.5,
-                    borderBottom: "1px solid #e0e0e0"
-                }}>
-                    <Topbar onToggleSidebar={toggleSidebar} />
+                <Box marginLeft={isSidebarOpen ? 0.1 : 0}>
+                    <Topbar onToggleSidebar={handleToggleSidebar} />
                 </Box>
-
                 <Outlet context={context} />
             </Box>
         </Box>

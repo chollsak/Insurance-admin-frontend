@@ -1,5 +1,5 @@
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
-import { ContentFormSchema, type ContentFormValues, type PromotionFormValues } from "../../../models";
+import { ContentFormSchema, type ContentFormValues } from "../../../models";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import { ArrowForward as ArrowForwardIcon } from "@mui/icons-material";
@@ -24,6 +24,7 @@ interface IContentFromProps {
   mode: "create" | "edit";
   defaultValues?: Partial<ContentFormValues>;
   contentId?: string;
+  id?: string;
 }
 
 export function ContentForm({ mode, defaultValues, id, contentId }: IContentFromProps) {
