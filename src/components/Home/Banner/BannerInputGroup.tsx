@@ -1,9 +1,11 @@
-import { Box, Button, Divider, FormControl, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
 import { Controller, useFieldArray, useFormContext, type FieldErrors } from "react-hook-form";
+import { Box, Button, Divider, FormControl, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import type { BannerFormValues, ContentCategory, ContentFormValues } from "../../../models";
+import { SmartTruncateText } from "../../common";
+import { useCallback, type Dispatch, type SetStateAction } from "react";
 
 const getBannerErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<BannerFormValues> | null => {
     if (category === "BANNER") {
@@ -12,7 +14,13 @@ const getBannerErrors = (category: ContentCategory, errors: FieldErrors<ContentF
     return null;
 };
 
-export function BannerInputGroup({ sx }: { sx?: SxProps<Theme> }) {
+interface IBannerInputGroups {
+    setIsCoverImageChanged: Dispatch<SetStateAction<boolean>>;
+    handleRemoveContentItem: (id: string) => void;
+    handleUpdateContentItemImage: (image: { id: string; contentImage: File }) => void;
+    sx?: SxProps<Theme>,
+}
+export function BannerInputGroup({ setIsCoverImageChanged, handleRemoveContentItem, handleUpdateContentItemImage, sx }: IBannerInputGroups) {
     return (
         <Box sx={{ ...sx, display: "flex", flexDirection: "column" }}>
             <BannerHeader />
@@ -22,8 +30,10 @@ export function BannerInputGroup({ sx }: { sx?: SxProps<Theme> }) {
                 display: "flex",
                 flexDirection: "column",
             }}>
-                <CoverInputGroup />
-                <ContentInputGroup />
+                <CoverInputGroup setIsCoverImageChanged={setIsCoverImageChanged} />
+                <ContentInputGroup
+                    handleUpdateContentItemImage={handleUpdateContentItemImage}
+                    handleRemoveContentItem={handleRemoveContentItem} />
             </Box>
         </Box>
     );
@@ -33,11 +43,10 @@ function BannerHeader() {
     return (
         <Box
             sx={{
-                minHeight: "60px",
                 display: "flex",
                 alignItems: "center",
-                px: 3,
-                gap: 1,
+                minHeight: "59px",
+                gap: 0.5
             }}>
             <IconButton>
                 <KeyboardBackspaceIcon
@@ -52,30 +61,15 @@ function BannerHeader() {
     );
 }
 
-const truncateFilename = (filename: string, maxLength: number = 20): string => {
-    if (filename.length <= maxLength) {
-        return filename;
-    }
+interface ICoverInputGroupProps {
+    setIsCoverImageChanged: Dispatch<SetStateAction<boolean>>;
+}
 
-    const lastDotIndex = filename.lastIndexOf('.');
-    const extension = lastDotIndex !== -1 ? filename.slice(lastDotIndex) : '';
-    const nameWithoutExtension = lastDotIndex !== -1 ? filename.slice(0, lastDotIndex) : filename;
-
-    const maxNameLength = maxLength - extension.length - 3; // 3 for "..."
-
-    if (maxNameLength <= 0) {
-        return "..." + extension;
-    }
-
-    return nameWithoutExtension.slice(0, maxNameLength) + "..." + extension;
-};
-
-function CoverInputGroup() {
+function CoverInputGroup({ setIsCoverImageChanged }: ICoverInputGroupProps) {
     const {
         control,
         formState: { errors },
         setValue,
-        trigger,
         watch,
     } = useFormContext<ContentFormValues>();
     const coverImage = watch("coverImage");
@@ -84,15 +78,13 @@ function CoverInputGroup() {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
             setValue("coverImage", file);
-            trigger("coverImage");
+            setIsCoverImageChanged(_prev => true);
         }
     };
 
     const handleRemoveFile = () => {
         setValue("coverImage", new File([], ""));
     };
-
-
 
     const bannerErrors = getBannerErrors(watch("category"), errors);
 
@@ -116,7 +108,7 @@ function CoverInputGroup() {
                             <Button
                                 component="label"
                                 variant="outlined"
-                                sx={{ borderRadius: "8px", py: 1, maxWidth: "100px", width: "100%", fontSize: "20px", lineHeight: "20px", borderColor: `${!!errors.coverImage ? "#d32f2f" : "inherit"}`, color: `${!!errors.coverImage ? "#d32f2f" : "inherit"}` }}>
+                                sx={{ borderRadius: "8px", py: 1, maxWidth: "100px", width: "100%", fontSize: "20px", lineHeight: "20px", borderColor: `${!!bannerErrors?.coverImage ? "#d32f2f" : "inherit"}`, color: `${!!bannerErrors?.coverImage ? "#d32f2f" : "inherit"}` }}>
                                 เลือกไฟล์
                                 <input
                                     name="coverImage"
@@ -129,13 +121,15 @@ function CoverInputGroup() {
 
                             {(coverImage.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                                    <Typography sx={{
-                                        textDecoration: "underline",
-                                        fontSize: "20px",
-                                        lineHeight: "20px",
-                                    }}>
-                                        {truncateFilename(coverImage.name)}
-                                    </Typography>
+                                    <SmartTruncateText
+                                        value={coverImage.name}
+                                        maxWidth={160}
+                                        isFileName={true}
+                                        sx={{
+                                            textDecoration: "underline",
+                                            fontSize: "20px",
+                                            lineHeight: "20px",
+                                        }} />
                                     <IconButton
                                         onClick={handleRemoveFile}
                                         sx={{ width: "20px", height: "20px", p: 2, color: "#05058C" }}>
@@ -145,9 +139,9 @@ function CoverInputGroup() {
                             )}
                         </Box>
 
-                        {errors.coverImage && (
+                        {bannerErrors?.coverImage && (
                             <Typography color="error" fontSize="12px" px={2}>
-                                {errors.coverImage.message}
+                                {bannerErrors?.coverImage.message}
                             </Typography>
                         )}
                     </Box>
@@ -213,7 +207,12 @@ function CoverInputGroup() {
     )
 }
 
-function ContentInputGroup() {
+interface IConetntInputGroups {
+    handleRemoveContentItem: (id: string) => void;
+    handleUpdateContentItemImage: (image: { id: string; contentImage: File }) => void;
+}
+
+function ContentInputGroup({ handleRemoveContentItem, handleUpdateContentItemImage }: IConetntInputGroups) {
     const {
         control,
     } = useFormContext<ContentFormValues>();
@@ -228,6 +227,12 @@ function ContentInputGroup() {
             append({ contentImage: new File([], ""), contentHyperLink: "" })
         }
     }
+
+    const handleRemove = useCallback((index: number, contentItemId: string) => {
+        console.log("contentItemId", contentItemId);
+        handleRemoveContentItem(contentItemId);
+        remove(index);
+    }, [remove]);
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, height: "100%", }}>
@@ -281,10 +286,11 @@ function ContentInputGroup() {
                 {fields.length > 0 && fields.map((field, index) => (
                     <ContentItemInputGroup
                         key={field.id}
+                        contentItemId={field.contentItemId}
                         index={index}
                         length={fields.length}
-                        onRemove={() => remove(index)}
-                    />
+                        onRemove={() => handleRemove(index, field.contentItemId!)}
+                        handleUpdateContentItemImage={handleUpdateContentItemImage} />
                 ))}
             </Box>
         </Box>
@@ -292,17 +298,18 @@ function ContentInputGroup() {
 }
 
 interface IContentItemInputGroupProps {
+    contentItemId?: string;
     index: number;
     length: number;
     onRemove?: () => void;
+    handleUpdateContentItemImage: (image: { id: string; contentImage: File }) => void;
 };
 
-export function ContentItemInputGroup({ index, length, onRemove }: IContentItemInputGroupProps) {
+export function ContentItemInputGroup({ contentItemId, index, length, onRemove, handleUpdateContentItemImage }: IContentItemInputGroupProps) {
     const {
         control,
         setValue,
         watch,
-        trigger,
         formState: { errors },
     } = useFormContext<ContentFormValues>();
 
@@ -312,7 +319,7 @@ export function ContentItemInputGroup({ index, length, onRemove }: IContentItemI
         const file = e.target.files?.[0];
         if (file) {
             setValue(`contents.${index}.contentImage`, file);
-            trigger(`contents.${index}.contentImage`);
+            handleUpdateContentItemImage({ id: contentItemId!, contentImage: file })
         }
     };
 
@@ -320,14 +327,7 @@ export function ContentItemInputGroup({ index, length, onRemove }: IContentItemI
         setValue(`contents.${index}.contentImage`, new File([], ""));
     };
 
-    const getBannerErrors = (): FieldErrors<BannerFormValues> | null => {
-        if (watch("category") === "BANNER") {
-            return errors as FieldErrors<BannerFormValues>;
-        }
-        return null;
-    };
-
-    const bannerErrors = getBannerErrors();
+    const bannerErrors = getBannerErrors(watch("category"), errors);
     const imageError = bannerErrors?.contents?.[index]?.contentImage;
     const linkError = bannerErrors?.contents?.[index]?.contentHyperLink;
 
@@ -392,7 +392,15 @@ export function ContentItemInputGroup({ index, length, onRemove }: IContentItemI
 
                             {(contentImage?.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={1} >
-                                    <Typography sx={{ textDecoration: "underline", fontSize: "20px", lineHeight: "20px", }}>{truncateFilename(contentImage.name)}</Typography>
+                                    <SmartTruncateText
+                                        value={contentImage.name}
+                                        maxWidth={160}
+                                        isFileName={true}
+                                        sx={{
+                                            textDecoration: "underline",
+                                            fontSize: "20px",
+                                            lineHeight: "20px",
+                                        }} />
                                     <IconButton
                                         size="small"
                                         onClick={handleRemoveFile}
