@@ -1,4 +1,4 @@
-import { Box, Button, Divider, FormControl, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
+import { Box, Button, Divider, FormControl, IconButton, Stack, TextField, Typography, useMediaQuery, type SxProps, type Theme } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useFormContext, type FieldErrors } from "react-hook-form";
@@ -66,6 +66,8 @@ interface ICoverInputGroupProps {
 }
 
 function CoverInputGroup({ setIsCoverImageChanged, setIsIconImageChanged }: ICoverInputGroupProps) {
+    const isBelow1100 = useMediaQuery('(max-width: 1100px)');
+
     const {
         formState: { errors },
         setValue,
@@ -146,7 +148,7 @@ function CoverInputGroup({ setIsCoverImageChanged, setIsIconImageChanged }: ICov
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
                                     <SmartTruncateText
                                         value={coverImage.name}
-                                        maxWidth={160}
+                                        maxWidth={isBelow1100 ? 96 : 160}
                                         isFileName={true}
                                         sx={{
                                             textDecoration: "underline",
@@ -217,7 +219,7 @@ function CoverInputGroup({ setIsCoverImageChanged, setIsIconImageChanged }: ICov
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
                                     <SmartTruncateText
                                         value={iconImage.name}
-                                        maxWidth={160}
+                                        maxWidth={isBelow1100 ? 96 : 160}
                                         isFileName={true}
                                         sx={{
                                             textDecoration: "underline",

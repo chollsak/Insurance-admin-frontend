@@ -15,7 +15,7 @@ import {
 import type { ContentModel, ContentResponse } from "../../../models";
 import { contentCategoryTranslations } from "../../../common";
 
-interface DisplayContentListProps {
+interface ContentListTableProps {
     newsItems: ContentModel[];
     contentData?: ContentResponse;
     draggedOverIndex: number | null;
@@ -30,7 +30,7 @@ interface DisplayContentListProps {
     onDelete: (item: ContentModel) => void;
 }
 
-export function DisplayContentList({
+export function ContentListTable({
     newsItems,
     contentData,
     draggedOverIndex,
@@ -43,7 +43,7 @@ export function DisplayContentList({
     onDragEnd,
     onEdit,
     onDelete
-}: DisplayContentListProps) {
+}: ContentListTableProps) {
     const fixedWidths = {
         no: "5%",
         title: "50%",

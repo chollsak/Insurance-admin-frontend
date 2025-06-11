@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useOutletContext, } from "react-router-dom";
+import { useNavigate, useOutletContext, } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -25,14 +25,15 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import type { ContentCategory, ContentModel } from "../../models";
-import { useContentsQuery, useDeleteContent } from "../../hooks";
-import { DisplayContentList } from "../../components";
+import { useCommon, useContentsQuery, useDeleteContent } from "../../hooks";
+import { ContentHeader, ContentListTable } from "../../components";
 
 export default function HomeScreen() {
   const navigate = useNavigate();
+  const { handleCloseSidebar } = useCommon();
 
   const { sx } = useOutletContext<{ sx?: SxProps<Theme> }>();
-
+  const { } = useCommon();
   const [selectedCategory, setSelectedCategory] = useState<"ALL" | ContentCategory>("ALL");
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -52,6 +53,7 @@ export default function HomeScreen() {
   const [draggedOverIndex, setDraggedOverIndex] = useState<number | null>(null);
 
   const handleNewClick = () => {
+    handleCloseSidebar();
     navigate("/content/new");
   };
 
@@ -133,6 +135,7 @@ export default function HomeScreen() {
   };
 
   const handleEdit = (item: ContentModel) => {
+    handleCloseSidebar();
     navigate(`/content/edit/${item.id}`);
   };
 
@@ -264,7 +267,7 @@ export default function HomeScreen() {
           <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
             <CircularProgress sx={{ color: "#3978E9" }} />
           </Box>
-        ) : <DisplayContentList
+        ) : <ContentListTable
           newsItems={newsItems}
           contentData={contentData}
           draggedOverIndex={draggedOverIndex}
@@ -278,13 +281,11 @@ export default function HomeScreen() {
           onDelete={handleDeleteClick}
         />}
 
-        {/* Pagination */}
         <Stack
           direction="row"
           justifyContent="end"
           alignItems="center"
-          spacing={1}
-        >
+          spacing={1}>
           <Stack direction="row" alignItems="center">
             <Typography variant="body2" sx={{ mr: 2 }}>
               Rows per page
@@ -365,68 +366,3 @@ export default function HomeScreen() {
   );
 };
 
-function ContentHeader() {
-  return (
-    <Stack
-      direction="row"
-      spacing={1.5}
-      alignItems="flex-end"
-      borderBottom="1px solid #BDBDBD">
-      <Typography
-        variant="h5"
-        component="h1"
-        sx={{
-          color: "#05058C",
-          fontWeight: "bold",
-          fontSize: "24px",
-        }}>
-        ข่าวสารและกิจกรรม
-      </Typography>
-      <Typography
-        sx={{
-          color: "#666",
-          fontSize: "24px",
-          fontWeight: "900",
-        }}>
-        |
-      </Typography>
-      <Box sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-      }}>
-        <Link
-          to="/"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            color: "#4285F4",
-
-            gap: "4px",
-          }}>
-          <Box
-            component="img"
-            src="/src/assets/img/news/homeicon.png"
-            sx={{ width: "16px", height: "16px" }} />
-          <Typography sx={{
-            fontSize: "24px",
-            fontWeight: "light",
-            lineHeight: "100%",
-          }}>
-            Home
-          </Typography>
-        </Link>
-        <Typography
-          sx={{
-            color: "#515252",
-            fontSize: "24px"
-          }}>
-          /
-        </Typography>
-        <Typography sx={{ color: "#515252", fontSize: "20px" }}>
-          ข่าวสารและกิจกรรม
-        </Typography>
-      </Box>
-    </Stack>
-  )
-}

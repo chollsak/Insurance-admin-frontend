@@ -22,12 +22,16 @@ export function BaseContentInputGroup({ isEditMode }: { isEditMode: boolean }) {
     return (
         <Stack
             direction="column"
-            justifyContent="center"
+            justifyContent="flex-start"
             alignItems="center"
             padding={3}
             spacing={2}
             flex={2}
-            width="100%">
+            width="100%"
+            height={"100%"}
+            sx={{
+                overflowY: "auto"
+            }}>
             <FormControl error={!!errors.category} sx={{ maxWidth: "341px", width: "100%", }}>
                 <Typography component="label" htmlFor="category" sx={{ fontSize: "22px", width: "fit-content" }}>
                     Category <span style={{ color: "#FF0000" }}>*</span>

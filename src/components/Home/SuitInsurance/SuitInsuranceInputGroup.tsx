@@ -1,10 +1,10 @@
-import { Box, Button, FormControl, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
+import type { Dispatch, SetStateAction } from "react";
+import { Box, Button, FormControl, IconButton, Stack, TextField, Typography, useMediaQuery, type SxProps, type Theme } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useFormContext, type FieldErrors } from "react-hook-form";
 import type { ContentCategory, ContentFormValues, SuitInsuranceFormValues } from "../../../models";
 import { SmartTruncateText } from "../../common";
-import type { Dispatch, SetStateAction } from "react";
 
 const getSuitInsuranceErrors = (category: ContentCategory, errors: FieldErrors<ContentFormValues>): FieldErrors<SuitInsuranceFormValues> | null => {
     if (category === "INSURANCE") {
@@ -47,9 +47,7 @@ function SuitInsuranceHeader() {
                 gap: 1,
             }}>
             <IconButton>
-                <KeyboardBackspaceIcon
-                    sx={{ width: 24, height: 24, color: "#6F7072" }}
-                />
+                <KeyboardBackspaceIcon sx={{ width: 24, height: 24, color: "#6F7072" }} />
             </IconButton>
             <Typography
                 sx={{ color: "#05058C", fontWeight: 500, fontSize: "22px" }}>
@@ -64,6 +62,8 @@ interface ICoverInputGroupProps {
 }
 
 function CoverInputGroup({ setIsImageChanged }: ICoverInputGroupProps) {
+    const isBelow1100 = useMediaQuery('(max-width: 1100px)');
+
     const {
         formState: { errors },
         setValue,
@@ -123,15 +123,14 @@ function CoverInputGroup({ setIsImageChanged }: ICoverInputGroupProps) {
                                     type="file"
                                     hidden
                                     accept=".jpg,.jpeg"
-                                    onChange={handleImageFileChange}
-                                />
+                                    onChange={handleImageFileChange} />
                             </Button>
 
                             {(image && image.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
                                     <SmartTruncateText
                                         value={image.name}
-                                        maxWidth={160}
+                                        maxWidth={isBelow1100 ? 96 : 160}
                                         isFileName={true}
                                         sx={{
                                             textDecoration: "underline",
@@ -199,8 +198,7 @@ function ContentInputGroup() {
                         render={({ field }) => (
                             <TextField {...field} id="titleTh" variant="outlined" size="small" fullWidth
                                 error={!!insuranceErrors?.titleTh}
-                                helperText={insuranceErrors?.titleTh?.message}
-                            />
+                                helperText={insuranceErrors?.titleTh?.message} />
                         )}
                     />
                 </FormControl>
@@ -215,8 +213,7 @@ function ContentInputGroup() {
                         render={({ field }) => (
                             <TextField {...field} id="titleEn" variant="outlined" size="small" fullWidth
                                 error={!!insuranceErrors?.titleEn}
-                                helperText={insuranceErrors?.titleEn?.message}
-                            />
+                                helperText={insuranceErrors?.titleEn?.message} />
                         )}
                     />
                 </FormControl>

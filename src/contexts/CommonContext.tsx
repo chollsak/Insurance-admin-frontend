@@ -2,14 +2,14 @@ import {
     createContext,
     useState,
     useEffect,
-    type Dispatch,
     type ReactNode,
-    type SetStateAction
 } from "react";
 
 export interface ICommonContextProps {
     isSidebarOpen: boolean;
-    setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
+    handleToggleSidebar: () => void;
+    handleCloseSidebar: () => void;
+    handleOpenSidebar: () => void;
 }
 
 export const CommonContext = createContext<ICommonContextProps | undefined>(undefined);
@@ -20,12 +20,24 @@ export function CommonProvider({ children }: { children: ReactNode }) {
         return stored !== null ? JSON.parse(stored) : true;
     });
 
+    function handleToggleSidebar() {
+        setIsSidebarOpen(prev => !prev);
+    }
+
+    function handleCloseSidebar() {
+        setIsSidebarOpen(_prev => false);
+    }
+
+    function handleOpenSidebar() {
+        setIsSidebarOpen(_prev => true);
+    }
+
     useEffect(() => {
         localStorage.setItem("isSidebarOpen", JSON.stringify(isSidebarOpen));
     }, [isSidebarOpen]);
 
     return (
-        <CommonContext.Provider value={{ isSidebarOpen, setIsSidebarOpen }}>
+        <CommonContext.Provider value={{ isSidebarOpen, handleToggleSidebar, handleCloseSidebar, handleOpenSidebar }}>
             {children}
         </CommonContext.Provider>
     );

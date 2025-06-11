@@ -1,3 +1,4 @@
 export * from "./BaseContentInputGroup";
-export * from "./DisplayContentList";
+export * from "./ContentListTable";
 export * from "./ContentForm";
+export * from "./ContentHeader";

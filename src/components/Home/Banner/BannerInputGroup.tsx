@@ -1,5 +1,5 @@
 import { Controller, useFieldArray, useFormContext, type FieldErrors } from "react-hook-form";
-import { Box, Button, Divider, FormControl, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
+import { Box, Button, Divider, FormControl, IconButton, Stack, TextField, Typography, useMediaQuery, type SxProps, type Theme } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,6 +20,7 @@ interface IBannerInputGroups {
     handleUpdateContentItemImage: (image: { id: string; contentImage: File }) => void;
     sx?: SxProps<Theme>,
 }
+
 export function BannerInputGroup({ setIsCoverImageChanged, handleRemoveContentItem, handleUpdateContentItemImage, sx }: IBannerInputGroups) {
     return (
         <Box sx={{ ...sx, display: "flex", flexDirection: "column" }}>
@@ -27,6 +28,7 @@ export function BannerInputGroup({ setIsCoverImageChanged, handleRemoveContentIt
             <Box sx={{
                 flex: 1,
                 overflowY: "auto",
+                height: "100%",
                 display: "flex",
                 flexDirection: "column",
             }}>
@@ -66,6 +68,8 @@ interface ICoverInputGroupProps {
 }
 
 function CoverInputGroup({ setIsCoverImageChanged }: ICoverInputGroupProps) {
+    const isBelow1100 = useMediaQuery('(max-width: 1100px)');
+
     const {
         control,
         formState: { errors },
@@ -123,7 +127,7 @@ function CoverInputGroup({ setIsCoverImageChanged }: ICoverInputGroupProps) {
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
                                     <SmartTruncateText
                                         value={coverImage.name}
-                                        maxWidth={160}
+                                        maxWidth={isBelow1100 ? 96 : 160}
                                         isFileName={true}
                                         sx={{
                                             textDecoration: "underline",
@@ -229,7 +233,6 @@ function ContentInputGroup({ handleRemoveContentItem, handleUpdateContentItemIma
     }
 
     const handleRemove = useCallback((index: number, contentItemId: string) => {
-        console.log("contentItemId", contentItemId);
         handleRemoveContentItem(contentItemId);
         remove(index);
     }, [remove]);
@@ -306,6 +309,8 @@ interface IContentItemInputGroupProps {
 };
 
 export function ContentItemInputGroup({ contentItemId, index, length, onRemove, handleUpdateContentItemImage }: IContentItemInputGroupProps) {
+    const isBelow1100 = useMediaQuery('(max-width: 1100px)');
+
     const {
         control,
         setValue,
@@ -379,8 +384,7 @@ export function ContentItemInputGroup({ contentItemId, index, length, onRemove, 
                                     lineHeight: "20px",
                                     borderColor: imageError ? "#d32f2f" : undefined,
                                     color: imageError ? "#d32f2f" : undefined,
-                                }}
-                            >
+                                }}>
                                 เลือกไฟล์
                                 <input
                                     type="file"
@@ -394,7 +398,7 @@ export function ContentItemInputGroup({ contentItemId, index, length, onRemove, 
                                 <Stack direction="row" alignItems="center" spacing={1} >
                                     <SmartTruncateText
                                         value={contentImage.name}
-                                        maxWidth={160}
+                                        maxWidth={isBelow1100 ? 96 : 160}
                                         isFileName={true}
                                         sx={{
                                             textDecoration: "underline",

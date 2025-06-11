@@ -1,9 +1,7 @@
-// components/Loadable.tsx
 import { Suspense, type JSX } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorDisplay from "./ErrorDisplay";
-
-const Loading = () => <div>Loading...</div>;
+import { FullScreenLoading as Loading } from "../Loading";
 
 export function Loadable(Component: React.LazyExoticComponent<() => JSX.Element>) {
     return (

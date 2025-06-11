@@ -1,5 +1,5 @@
 import { Controller, useFormContext, type FieldErrors } from "react-hook-form";
-import { Box, Button, Divider, FormControl, FormHelperText, IconButton, Stack, TextField, Typography, type SxProps, type Theme } from "@mui/material";
+import { Box, Button, Divider, FormControl, FormHelperText, IconButton, Stack, TextField, Typography, useMediaQuery, type SxProps, type Theme } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -49,9 +49,7 @@ function PromotionHeader() {
                 gap: 1,
             }}>
             <IconButton>
-                <KeyboardBackspaceIcon
-                    sx={{ width: 24, height: 24, color: "#6F7072" }}
-                />
+                <KeyboardBackspaceIcon sx={{ width: 24, height: 24, color: "#6F7072" }} />
             </IconButton>
             <Typography
                 sx={{ color: "#05058C", fontWeight: 500, fontSize: "22px" }}>
@@ -66,6 +64,8 @@ interface ICoverInputGroupProps {
 }
 
 function CoverInputGroup({ setIsCoverImageChanged }: ICoverInputGroupProps) {
+    const isBelow1100 = useMediaQuery('(max-width: 1100px)');
+
     const {
         control,
         formState: { errors },
@@ -115,15 +115,14 @@ function CoverInputGroup({ setIsCoverImageChanged }: ICoverInputGroupProps) {
                                     type="file"
                                     hidden
                                     accept=".jpg,.jpeg"
-                                    onChange={handleFileChange}
-                                />
+                                    onChange={handleFileChange} />
                             </Button>
 
                             {(coverImage.size > 0) && (
                                 <Stack direction="row" alignItems="center" spacing={0.5}>
                                     <SmartTruncateText
                                         value={coverImage.name}
-                                        maxWidth={160}
+                                        maxWidth={isBelow1100 ? 96 : 160}
                                         isFileName={true}
                                         sx={{
                                             textDecoration: "underline",
@@ -181,10 +180,8 @@ function CoverInputGroup({ setIsCoverImageChanged }: ICoverInputGroupProps) {
                                             size="small"
                                             fullWidth
                                             error={!!promotionErrors?.coverHyperLink}
-                                            helperText={promotionErrors?.coverHyperLink?.message}
-                                        />
-                                    )}
-                                />
+                                            helperText={promotionErrors?.coverHyperLink?.message} />
+                                    )} />
                                 <Button
                                     variant="outlined"
                                     sx={{
@@ -250,10 +247,8 @@ function ContentInputGroup() {
                         render={({ field }) => (
                             <TextField {...field} id="titleTh" variant="outlined" size="small" fullWidth
                                 error={!!promotionErrors?.titleTh}
-                                helperText={promotionErrors?.titleTh?.message}
-                            />
-                        )}
-                    />
+                                helperText={promotionErrors?.titleTh?.message} />
+                        )} />
                 </FormControl>
 
                 <FormControl error={!!promotionErrors?.titleEn} sx={{ maxWidth: "341px", width: "100%", gap: 1 }}>
@@ -266,10 +261,8 @@ function ContentInputGroup() {
                         render={({ field }) => (
                             <TextField {...field} id="titleEn" variant="outlined" size="small" fullWidth
                                 error={!!promotionErrors?.titleEn}
-                                helperText={promotionErrors?.titleEn?.message}
-                            />
-                        )}
-                    />
+                                helperText={promotionErrors?.titleEn?.message} />
+                        )} />
                 </FormControl>
 
                 <FormControl error={!!promotionErrors?.titleTh} sx={{ maxWidth: "341px", width: "100%", gap: 1 }}>
@@ -282,10 +275,8 @@ function ContentInputGroup() {
                         render={({ field }) => (
                             <TextField {...field} id="descriptionTh" variant="outlined" size="small" fullWidth
                                 error={!!promotionErrors?.descriptionTh}
-                                helperText={promotionErrors?.descriptionTh?.message}
-                            />
-                        )}
-                    />
+                                helperText={promotionErrors?.descriptionTh?.message} />
+                        )} />
                 </FormControl>
 
                 <FormControl error={!!promotionErrors?.descriptionEn} sx={{ maxWidth: "341px", width: "100%", gap: 1 }}>
@@ -298,10 +289,8 @@ function ContentInputGroup() {
                         render={({ field }) => (
                             <TextField {...field} id="descriptionEn" variant="outlined" size="small" fullWidth
                                 error={!!promotionErrors?.descriptionEn}
-                                helperText={promotionErrors?.descriptionEn?.message}
-                            />
-                        )}
-                    />
+                                helperText={promotionErrors?.descriptionEn?.message} />
+                        )} />
                 </FormControl>
 
                 <FormControl error={!!promotionErrors?.startEndDate} sx={{ maxWidth: "341px", width: "100%", }}>
@@ -327,11 +316,9 @@ function ContentInputGroup() {
                                         openPickerButton: {
                                             sx: { color: "#B3B3B3" }
                                         }
-                                    }}
-                                />
+                                    }} />
                             </LocalizationProvider>
-                        )}
-                    />
+                        )} />
                     <FormHelperText>{promotionErrors?.startEndDate?.message}</FormHelperText>
                 </FormControl>
             </Stack>
